@@ -179,16 +179,25 @@ const Admin = () => {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button variant={tab === "products" ? "default" : "outline"} onClick={() => setTab("products")} className="rounded-xl">
+            <Button
+              onClick={() => setTab("products")}
+              className={`rounded-xl ${tab === "products" ? "bg-ink text-paper" : "border border-border text-ink hover:bg-muted"}`}
+            >
               Product List
             </Button>
-            <Button variant={tab === "add" ? "default" : "outline"} onClick={() => setTab("add")} className="rounded-xl">
+            <Button
+              onClick={() => setTab("add")}
+              className={`rounded-xl ${tab === "add" ? "bg-ink text-paper" : "border border-border text-ink hover:bg-muted"}`}
+            >
               <PackagePlus className="mr-2 h-4 w-4" /> Add Product
             </Button>
-            <Button variant={tab === "orders" ? "default" : "outline"} onClick={() => setTab("orders")} className="rounded-xl">
+            <Button
+              onClick={() => setTab("orders")}
+              className={`rounded-xl ${tab === "orders" ? "bg-ink text-paper" : "border border-border text-ink hover:bg-muted"}`}
+            >
               Orders
             </Button>
-            <Button variant="outline" onClick={handleLogout} className="rounded-xl">
+            <Button onClick={handleLogout} className="rounded-xl border border-border text-ink hover:bg-muted">
               <LogOut className="mr-2 h-4 w-4" /> Logout
             </Button>
           </div>
@@ -222,12 +231,12 @@ const Admin = () => {
                     <td className="px-4 py-4 font-semibold text-primary">Rs. {product.price}</td>
                     <td className="px-4 py-4">{product.category}</td>
                     <td className="px-4 py-4">
-                      <Button variant="ghost" size="icon" onClick={() => handleDelete(product.id)} aria-label={`Delete ${product.name}`}>
+                      <Button onClick={() => handleDelete(product.id)} aria-label={`Delete ${product.name}`}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </td>
                     <td className="px-4 py-4">
-                      <Button variant="outline" size="icon" onClick={() => handleAddStock(product.id)} aria-label={`Add stock for ${product.name}`}>
+                      <Button onClick={() => handleAddStock(product.id)} aria-label={`Add stock for ${product.name}`}>
                         <PlusCircle className="h-4 w-4" />
                       </Button>
                     </td>
