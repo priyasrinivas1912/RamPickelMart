@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+    /* Surfaces — warm cream paper */
+    --background: 38 40% 96%;
+    --foreground: 24 35% 12%;
+
+    --card: 36 45% 98%;
+    --card-foreground: 24 35% 12%;
+
+    --popover: 36 45% 98%;
+    --popover-foreground: 24 35% 12%;
+
+    /* Brand — deep terracotta / chili red */
+    --primary: 8 72% 38%;
+    --primary-foreground: 38 40% 96%;
+    --primary-glow: 14 78% 52%;
+
+    /* Secondary — turmeric mustard */
+    --secondary: 38 75% 52%;
+    --secondary-foreground: 24 40% 14%;
+
+    /* Accent — gongura maroon */
+    --accent: 350 55% 32%;
+    --accent-foreground: 38 40% 96%;
+
+    --muted: 36 25% 90%;
+    --muted-foreground: 24 15% 38%;
+
+    --destructive: 0 75% 45%;
+    --destructive-foreground: 38 40% 96%;
+
+    --border: 30 22% 84%;
+    --input: 30 22% 84%;
+    --ring: 8 72% 38%;
+
+    --radius: 1rem;
+
+    /* Semantic extras */
+    --clay: 18 55% 42%;
+    --leaf: 95 28% 32%;
+    --ink: 24 40% 10%;
+    --paper: 38 40% 96%;
+    --paper-warm: 36 50% 92%;
+
+    /* Gradients */
+    --gradient-spice: linear-gradient(135deg, hsl(8 72% 38%) 0%, hsl(14 78% 52%) 50%, hsl(38 75% 52%) 100%);
+    --gradient-warm: linear-gradient(180deg, hsl(36 50% 92%) 0%, hsl(38 40% 96%) 100%);
+    --gradient-clay: linear-gradient(135deg, hsl(18 55% 42%), hsl(8 72% 38%));
+    --gradient-overlay: linear-gradient(180deg, hsla(24,40%,10%,0) 0%, hsla(24,40%,10%,0.85) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 2px 12px -2px hsl(24 35% 12% / 0.08);
+    --shadow-elegant: 0 20px 50px -20px hsl(8 72% 38% / 0.25);
+    --shadow-clay: 0 30px 60px -25px hsl(18 55% 30% / 0.45);
+    --shadow-glow: 0 0 60px hsl(14 78% 52% / 0.35);
+
+    /* Motion */
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+    --transition-base: all 0.4s var(--ease-smooth);
+
+    --sidebar-background: 38 40% 96%;
+    --sidebar-foreground: 24 35% 12%;
+    --sidebar-primary: 8 72% 38%;
+    --sidebar-primary-foreground: 38 40% 96%;
+    --sidebar-accent: 36 25% 90%;
+    --sidebar-accent-foreground: 24 35% 12%;
+    --sidebar-border: 30 22% 84%;
+    --sidebar-ring: 8 72% 38%;
+  }
+
+  .dark {
+    --background: 24 30% 8%;
+    --foreground: 38 40% 94%;
+    --card: 24 30% 11%;
+    --card-foreground: 38 40% 94%;
+    --popover: 24 30% 11%;
+    --popover-foreground: 38 40% 94%;
+    --primary: 14 78% 55%;
+    --primary-foreground: 24 30% 8%;
+    --secondary: 38 60% 50%;
+    --secondary-foreground: 24 30% 8%;
+    --accent: 350 55% 45%;
+    --accent-foreground: 38 40% 94%;
+    --muted: 24 20% 18%;
+    --muted-foreground: 38 20% 70%;
+    --border: 24 20% 20%;
+    --input: 24 20% 20%;
+    --ring: 14 78% 55%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5 {
+    font-family: 'Fraunces', 'Playfair Display', Georgia, serif;
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+  .font-display { font-family: 'Fraunces', Georgia, serif; }
+  .font-telugu { font-family: 'Noto Sans Telugu', sans-serif; }
+}
+
+@layer utilities {
+  .bg-gradient-spice { background-image: var(--gradient-spice); }
+  .bg-gradient-warm { background-image: var(--gradient-warm); }
+  .bg-gradient-clay { background-image: var(--gradient-clay); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-elegant { box-shadow: var(--shadow-elegant); }
+  .shadow-clay { box-shadow: var(--shadow-clay); }
+  .shadow-glow { box-shadow: var(--shadow-glow); }
+  .text-balance { text-wrap: balance; }
+
+  .grain::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
+    opacity: 0.12; pointer-events: none; mix-blend-mode: multiply;
+  }
+
+  .marquee-track { animation: marquee 30s linear infinite; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
