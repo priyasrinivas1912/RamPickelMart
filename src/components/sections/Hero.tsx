@@ -53,7 +53,7 @@ const Hero = () => {
             </h1>
 
             <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">
-              Stone-ground pickles, slow-roasted podis and cold-pressed oils — crafted in village kitchens across Andhra Pradesh. No preservatives, no shortcuts. Just the recipes our grandmothers swore by.
+              Stone-ground pickles, Honey, Ghee, Sweets and cold-pressed oils — crafted in village kitchens across Andhra Pradesh. No preservatives, no shortcuts. Just the recipes our grandmothers swore by.
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
@@ -131,22 +131,6 @@ const Hero = () => {
                   />
                 ))}
               </div>
-            </div>
-
-            <div className="mt-6 grid gap-3">
-              {slides.map((slide, index) => (
-                <button
-                  key={slide.label}
-                  type="button"
-                  onClick={() => emblaApi?.scrollTo(index)}
-                  className={`rounded-3xl border px-4 py-4 text-left transition ${
-                    index === selectedIndex ? "border-primary bg-primary/10" : "border-border bg-card hover:border-primary"
-                  }`}
-                >
-                  <span className="text-xs uppercase tracking-[0.28em] text-muted-foreground">{slide.label}</span>
-                  <p className="mt-2 text-sm font-medium text-ink">{slide.description}</p>
-                </button>
-              ))}
             </div>
           </div>
         </div>

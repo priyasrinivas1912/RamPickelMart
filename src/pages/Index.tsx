@@ -15,7 +15,10 @@ const Index = () => {
       <main>
         <h1 className="sr-only">Ram Pickel Mart - Authentic Andhra pickles, podis & homemade foods</h1>
 
-        {/* Featured product image right after navbar */}
+        {/* Hero carousel with products below */}
+        <Hero />
+
+        {/* Featured product image right after hero */}
         <ProductSection />
 
         {/* Carousel of category images */}
@@ -53,6 +56,8 @@ const Index = () => {
         <Testimonials />
         <Newsletter />
         <Story />
+
+        <div className="h-16 md:h-24" />
       </main>
       <Footer />
     </div>

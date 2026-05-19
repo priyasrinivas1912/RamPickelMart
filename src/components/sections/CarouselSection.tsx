@@ -37,36 +37,19 @@ const CarouselSection = () => {
   return (
     <section className="bg-paper border-t border-border">
       <div className="container py-24">
-        <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-center">
-          <div className="max-w-xl">
-            <span className="text-xs uppercase tracking-[0.3em] text-primary font-medium">Explore our best sellers</span>
-            <h2 className="font-display text-4xl md:text-5xl text-ink mt-4 leading-tight">
-              Delicious Andhra flavors, shown side by side.
-            </h2>
-            <p className="mt-6 text-lg leading-8 text-muted-foreground">
-              Pick the perfect jar for every craving: pickles, honey, ghee, sweets, and snacks. Tap a category to see the image on the right.
-            </p>
+        <div className="space-y-10">
+        <div className="max-w-2xl">
+          <span className="text-xs uppercase tracking-[0.3em] text-primary font-medium">Explore our best sellers</span>
+          <h2 className="font-display text-4xl md:text-5xl text-ink mt-4 leading-tight">
+            Delicious Andhra flavors, shown side by side.
+          </h2>
+          <p className="mt-6 text-lg leading-8 text-muted-foreground">
+            Pick the perfect jar for every craving: pickles, honey, ghee, sweets, and snacks. Tap a category to see the image above.
+          </p>
+        </div>
 
-            <div className="mt-10 grid gap-3">
-              {items.map((item, index) => (
-                <button
-                  key={item.title}
-                  type="button"
-                  onClick={() => emblaApi?.scrollTo(index)}
-                  className={`w-full rounded-3xl border px-5 py-4 text-left transition ${
-                    index === selectedIndex
-                      ? "border-primary bg-primary/10 text-ink"
-                      : "border-border bg-card text-foreground hover:border-primary hover:bg-primary/5"
-                  }`}
-                >
-                  <span className="text-sm uppercase tracking-[0.28em] text-muted-foreground">{item.title}</span>
-                  <p className="mt-2 text-base font-medium leading-7">{item.subtitle}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative rounded-[2rem] overflow-hidden border border-border/60 bg-white shadow-soft w-full lg:max-w-[440px] mx-auto lg:mx-0">
+        <div className="space-y-8">
+          <div className="relative rounded-[2rem] overflow-hidden border border-border/60 bg-white shadow-soft">
             <div className="p-4">
               <div className="embla overflow-hidden rounded-[1.75rem] bg-paper">
                 <div className="embla__viewport" ref={emblaRef}>
@@ -124,7 +107,9 @@ const CarouselSection = () => {
               ))}
             </div>
           </div>
+
         </div>
+      </div>
       </div>
     </section>
   );
