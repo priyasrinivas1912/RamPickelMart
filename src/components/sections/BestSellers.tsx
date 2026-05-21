@@ -1,33 +1,66 @@
-
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { products } from "@/data/products";
 import ProductCard from "@/components/ProductCard";
 
+const PAGE_SIZE = 4;
+
 export default function BestSellers() {
+  const [page, setPage] = useState(0);
+
+  // Guard: if no products, render nothing
+  if (!products || products.length === 0) return null;
+
+  const totalPages = Math.ceil(products.length / PAGE_SIZE);
+  const visibleProducts = products.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+
+  const prev = () => setPage((p) => Math.max(0, p - 1));
+  const next = () => setPage((p) => Math.min(totalPages - 1, p + 1));
+
   return (
-    <section className="w-full px-4 md:px-10 py-10">
-      
+    <section className="w-full px-4 md:px-10 py-10 bg-[#f7f1e8]">
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-2xl md:text-3xl font-bold">
-          Our Best Sellers
-        </h2>
+      <h2
+        className="text-3xl md:text-4xl font-extrabold text-[#b85c1a] mb-6"
+        style={{ fontFamily: "Georgia, serif" }}
+      >
+        Our Best Sellers
+      </h2>
 
-        <Link
-          to="/products"
-          className="flex items-center gap-2 text-sm font-medium hover:gap-3 transition-all"
-        >
-          View All <ArrowRight size={16} />
-        </Link>
-      </div>
-
-      {/* Grid (no Shopify, no images required inside cards) */}
+      {/* Product Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {products.slice(0, 8).map((product) => (
+        {visibleProducts.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
+
+      {/* Pagination — only show if more than one page */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-4 mt-8">
+          <button
+            onClick={prev}
+            disabled={page === 0}
+            className="p-2 rounded-full border border-[#c0aa90] text-[#6b4e2a] hover:bg-[#ede4d6] disabled:opacity-30 transition"
+            aria-label="Previous page"
+          >
+            <ChevronLeft size={18} />
+          </button>
+
+          <span className="text-sm font-medium text-[#6b4e2a]">
+            {page + 1}/{totalPages}
+          </span>
+
+          <button
+            onClick={next}
+            disabled={page === totalPages - 1}
+            className="p-2 rounded-full border border-[#c0aa90] text-[#6b4e2a] hover:bg-[#ede4d6] disabled:opacity-30 transition"
+            aria-label="Next page"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
+      )}
     </section>
   );
 }
