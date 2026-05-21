@@ -1,7 +1,5 @@
 import avakaya from "@/assets/product-avakaya.jpg";
 import gongura from "@/assets/product-gongura.jpg";
-import ghee from "@assets/product-ghee.jpg";
-import honey from "@assets/product-honey.jpg";
 
 
 

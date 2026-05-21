@@ -6,6 +6,7 @@ import CarouselSection from "../components/sections/CarouselSection";
 import WhyUs from "../components/sections/WhyUs";
 import Newsletter from "../components/sections/Newsletter";
 import Story from "../components/sections/Story";
+import BestSellers from "../components/sections/BestSellers";
 
 const Index = () => {
   return (
@@ -14,11 +15,16 @@ const Index = () => {
       <main>
         <h1 className="sr-only">Ram Pickel Mart - Authentic Andhra pickles, podis & homemade foods</h1>
 
+        <div style={{padding: '20px', textAlign: 'center', fontSize: '24px'}}>Testing Page Load</div>
+
         {/* Hero carousel with products below */}
         <Hero />
 
         {/* Featured product image right after hero */}
         <ProductSection />
+
+        {/* Best Sellers Section */}
+        <BestSellers />
 
         {/* Carousel of category images */}
         <CarouselSection />
