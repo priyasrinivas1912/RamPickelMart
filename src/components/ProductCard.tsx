@@ -10,41 +10,41 @@ export default function ProductCard({ product }: ProductCardProps) {
   const href = `/products/${product.slug}`;
 
   return (
-    <div className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-[#e8ddd0] hover:shadow-lg transition-shadow duration-300">
+    <div className="group flex flex-col bg-white rounded-xl overflow-hidden border-2 border-[#d4c4b0] hover:shadow-xl transition-shadow duration-300 flex-shrink-0 w-64">
 
       {/* Product Image */}
-      <Link to={href} className="block overflow-hidden bg-[#f5f0ea]">
+      <Link to={href} className="block overflow-hidden bg-[#e8ddd0]">
         {product.image ? (
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-500"
+            className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
           />
         ) : (
-          <div className="w-full h-56 flex items-center justify-center text-[#b5a08a] text-sm bg-[#f0ebe3]">
+          <div className="w-full h-64 flex items-center justify-center text-[#b5a08a] text-sm bg-[#e8ddd0]">
             No Image
           </div>
         )}
       </Link>
 
       {/* Card Body */}
-      <div className="flex flex-col flex-1 px-4 pt-3 pb-4 gap-2">
+      <div className="flex flex-col flex-1 px-5 pt-4 pb-5 gap-3">
         <Link to={href}>
-          <h3 className="font-semibold text-[15px] text-[#2b1e0f] leading-snug hover:text-[#b85c1a] transition-colors">
+          <h3 className="font-bold text-[16px] text-[#2b1e0f] leading-snug hover:text-[#d4621a] transition-colors">
             {product.name}
           </h3>
           {product.teluguName && (
-            <p className="text-xs text-[#a08060] mt-0.5">{product.teluguName}</p>
+            <p className="text-xs text-[#8b7355] mt-1">{product.teluguName}</p>
           )}
         </Link>
 
-        <p className="text-[#b85c1a] font-bold text-[15px]">
+        <p className="text-[#c85a16] font-bold text-[17px]">
           From Rs. {product.price.toFixed(2)}
         </p>
 
         <Link
           to={href}
-          className="mt-auto block text-center border border-[#2b1e0f] text-[#2b1e0f] text-[13px] font-medium py-2.5 rounded-lg hover:bg-[#2b1e0f] hover:text-white transition-colors duration-200"
+          className="mt-auto block text-center border-2 border-[#c4a878] text-[#6b4f34] text-[14px] font-semibold py-3 rounded-lg hover:bg-[#c4a878] hover:text-white transition-all duration-200"
         >
           Choose options
         </Link>

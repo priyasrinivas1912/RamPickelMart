@@ -18,47 +18,58 @@ export default function BestSellers() {
   const next = () => setPage((p) => Math.min(totalPages - 1, p + 1));
 
   return (
-    <section className="w-full px-4 md:px-10 py-10 bg-[#f7f1e8]">
+    <section className="w-full px-6 md:px-12 py-12 bg-[#f9f6f1]">
 
       {/* Header */}
       <h2
-        className="text-3xl md:text-4xl font-extrabold text-[#b85c1a] mb-6"
+        className="text-4xl md:text-5xl font-bold text-[#c85a16] mb-8"
         style={{ fontFamily: "Georgia, serif" }}
       >
         Our Best Sellers
       </h2>
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {visibleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+      {/* Product Carousel Container */}
+      <div className="flex items-center gap-6">
+        {/* Left Arrow */}
+        {totalPages > 1 && (
+          <button
+            onClick={prev}
+            disabled={page === 0}
+            className="p-2 rounded-full border-2 border-[#c4a878] text-[#8b6f47] hover:bg-[#e8ddd0] disabled:opacity-30 transition flex-shrink-0"
+            aria-label="Previous page"
+          >
+            <ChevronLeft size={20} />
+          </button>
+        )}
+
+        {/* Product Grid */}
+        <div className="flex-1 overflow-hidden">
+          <div className="grid grid-cols-4 gap-6">
+            {visibleProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+
+        {/* Right Arrow */}
+        {totalPages > 1 && (
+          <button
+            onClick={next}
+            disabled={page === totalPages - 1}
+            className="p-2 rounded-full border-2 border-[#c4a878] text-[#8b6f47] hover:bg-[#e8ddd0] disabled:opacity-30 transition flex-shrink-0"
+            aria-label="Next page"
+          >
+            <ChevronRight size={20} />
+          </button>
+        )}
       </div>
 
       {/* Pagination — only show if more than one page */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-8">
-          <button
-            onClick={prev}
-            disabled={page === 0}
-            className="p-2 rounded-full border border-[#c0aa90] text-[#6b4e2a] hover:bg-[#ede4d6] disabled:opacity-30 transition"
-            aria-label="Previous page"
-          >
-            <ChevronLeft size={18} />
-          </button>
-
-          <span className="text-sm font-medium text-[#6b4e2a]">
+        <div className="flex items-center justify-center gap-4 mt-10">
+          <span className="text-base font-semibold text-[#c85a16]">
             {page + 1}/{totalPages}
           </span>
-
-          <button
-            onClick={next}
-            disabled={page === totalPages - 1}
-            className="p-2 rounded-full border border-[#c0aa90] text-[#6b4e2a] hover:bg-[#ede4d6] disabled:opacity-30 transition"
-            aria-label="Next page"
-          >
-            <ChevronRight size={18} />
-          </button>
         </div>
       )}
     </section>
