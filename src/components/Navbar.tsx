@@ -1,6 +1,7 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { ShoppingBag, Menu, X, User, LogOut } from "lucide-react";
+import { ShoppingBag, Menu, X } from "lucide-react";
+
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -16,52 +17,98 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { count, open } = useCart();
   const { user, signOut } = useAuth();
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="border-b border-border bg-paper">
-      <div className="container grid grid-cols-[auto_1fr_auto] items-center gap-4 py-4">
-        <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Ram Pickel Mart logo" className="h-12 w-12 rounded-full object-cover" />
-        </Link>
+    <header className="sticky top-0 z-50 border-b border-border bg-paper">
 
-        <div className="text-center">
+      <div className="container mx-auto px-4">
 
-  {/* Creative Brand Name */}
-  <h1
-    className="text-3xl md:text-4xl font-black tracking-wide text-[#8B4513] drop-shadow-sm"
-    style={{
-      fontFamily: "'Pacifico', cursive",
-      letterSpacing: "1px",
-    }}
-  >
-    RamPickelMart
-  </h1>
+        {/* NAVBAR */}
+        <div className="flex items-center justify-between py-4">
 
-  {/* Subtitle */}
-  <p className="mt-1 text-xs uppercase tracking-[0.30em] text-[#7b6a58] font-semibold">
-    Flavors of Andhra
-  </p>
+          {/* LEFT SIDE */}
+          <div className="flex items-center gap-3">
 
-</div>
+            {/* LOGO */}
+            <Link to="/">
+              <img
+                src={logo}
+                alt="Ram Pickel Mart logo"
+                className="
+                  h-12
+                  w-12
+                  md:h-14
+                  md:w-14
+                  rounded-full
+                  object-cover
+                "
+              />
+            </Link>
 
-        <div className="flex items-center justify-end gap-2">
-          <nav className="hidden md:flex items-center gap-6 mr-4">
-            {links.map((link) => (
-              <NavLink
-                key={link.to}
-                to={link.to}
-                className={({ isActive }) =>
-                  `text-sm font-medium transition-colors ${isActive ? "text-primary" : "text-foreground/75"}`
-                }
-                end={link.to === "/"}
+            {/* BRAND */}
+            <div className="text-center">
+
+              <h1
+                className="
+                  text-2xl
+                  sm:text-3xl
+                  md:text-4xl
+                  font-black
+                  tracking-wide
+                  text-[#8B4513]
+                  drop-shadow-sm
+                "
+                style={{
+                  fontFamily: "'Pacifico', cursive",
+                  letterSpacing: "1px",
+                }}
               >
-                {link.label}
-              </NavLink>
-            ))}
-          </nav>
+                RamPickelMart
+              </h1>
 
-          <div className="flex items-center gap-2">
+              <p
+                className="
+                  text-[10px]
+                  sm:text-xs
+                  uppercase
+                  tracking-[0.24em]
+                  text-muted-foreground
+                  font-semibold
+                "
+              >
+                Flavors of Andhra
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* DESKTOP MENU */}
+          <div className="hidden md:flex items-center gap-6">
+
+            {/* NAV LINKS */}
+            <nav className="flex items-center gap-6">
+              {links.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  end={link.to === "/"}
+                  className={({ isActive }) =>
+                    `text-sm font-medium transition-colors ${
+                      isActive
+                        ? "text-primary"
+                        : "text-foreground/75"
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* CART */}
             <Button
               type="button"
               variant="ghost"
@@ -71,6 +118,7 @@ const Navbar = () => {
               className="relative rounded-full text-ink hover:bg-muted"
             >
               <ShoppingBag className="h-5 w-5" />
+
               {count > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 grid h-5 w-5 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
                   {count}
@@ -78,6 +126,7 @@ const Navbar = () => {
               )}
             </Button>
 
+            {/* LOGIN / LOGOUT */}
             {user ? (
               <Button
                 type="button"
@@ -98,33 +147,76 @@ const Navbar = () => {
               </Button>
             )}
 
+          </div>
+
+          {/* MOBILE MENU BUTTON */}
+          <div className="flex md:hidden items-center gap-2">
+
+            {/* CART */}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Cart"
+              onClick={open}
+              className="relative rounded-full text-ink hover:bg-muted"
+            >
+              <ShoppingBag className="h-5 w-5" />
+
+              {count > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 grid h-5 w-5 place-items-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+                  {count}
+                </span>
+              )}
+            </Button>
+
+            {/* MENU ICON */}
             <Button
               type="button"
               variant="ghost"
               size="icon"
               aria-label="Menu"
               onClick={() => setMobileOpen((v) => !v)}
-              className="rounded-full text-ink hover:bg-muted md:hidden"
+              className="rounded-full text-ink hover:bg-muted"
             >
-              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </Button>
+
           </div>
+
         </div>
+
       </div>
 
+      {/* MOBILE MENU */}
       {mobileOpen && (
         <div className="border-t border-border bg-paper md:hidden">
+
           <nav className="container flex flex-col gap-2 py-4 w-full">
+
             {links.map((link) => (
               <Link
                 key={link.to}
                 to={link.to}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-3 py-3 text-sm font-medium text-foreground hover:bg-muted"
+                className="
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-sm
+                  font-medium
+                  text-foreground
+                  hover:bg-muted
+                "
               >
                 {link.label}
               </Link>
             ))}
+
             {user ? (
               <button
                 type="button"
@@ -132,7 +224,16 @@ const Navbar = () => {
                   setMobileOpen(false);
                   signOut().then(() => navigate("/"));
                 }}
-                className="rounded-xl px-3 py-3 text-sm font-medium text-foreground text-left hover:bg-muted"
+                className="
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-sm
+                  font-medium
+                  text-left
+                  text-foreground
+                  hover:bg-muted
+                "
               >
                 Sign out
               </button>
@@ -140,14 +241,25 @@ const Navbar = () => {
               <Link
                 to="/login"
                 onClick={() => setMobileOpen(false)}
-                className="rounded-xl px-3 py-3 text-sm font-medium text-foreground hover:bg-muted"
+                className="
+                  rounded-xl
+                  px-3
+                  py-3
+                  text-sm
+                  font-medium
+                  text-foreground
+                  hover:bg-muted
+                "
               >
                 Login
               </Link>
             )}
+
           </nav>
+
         </div>
       )}
+
     </header>
   );
 };
