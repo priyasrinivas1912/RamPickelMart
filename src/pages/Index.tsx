@@ -4,7 +4,6 @@ import Hero from "../components/sections/Hero";
 import ProductSection from "../components/sections/ProductSection";
 import CarouselSection from "../components/sections/CarouselSection";
 import WhyUs from "../components/sections/WhyUs";
-import Testimonials from "../components/sections/Testimonials";
 import Newsletter from "../components/sections/Newsletter";
 import Story from "../components/sections/Story";
 
@@ -53,7 +52,6 @@ const Index = () => {
           </div>
         </section>
 
-        <Testimonials />
         <Newsletter />
         <Story />
 
