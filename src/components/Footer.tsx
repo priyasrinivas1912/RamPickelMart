@@ -19,75 +19,47 @@ export default function Footer() {
             grid-cols-1
             sm:grid-cols-2
             lg:grid-cols-4
-            gap-8
-            lg:gap-10
+            gap-10
             mb-12
           "
         >
 
           {/* Brand */}
-          <div
-            className="
-              bg-[#1f1f1f]
-              rounded-[28px]
-              p-6
-              border
-              border-gray-800
-              shadow-xl
-              min-h-[220px]
-              flex
-              flex-col
-              justify-between
-            "
-          >
+          <div>
 
-            <div>
+            <div className="flex items-center gap-3 mb-5">
 
-              <div className="flex items-center gap-3 mb-5">
+              <img
+                src={logo}
+                alt="RamPickelMart"
+                className="w-12 h-12 rounded-full object-cover"
+              />
 
-                <img
-                  src={logo}
-                  alt="RamPickelMart"
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-
-                <span
-                  className="
-                    text-2xl
-                    font-bold
-                    text-white
-                  "
-                  style={{
-                    fontFamily: "'Pacifico', cursive",
-                  }}
-                >
-                  RamPickelMart
-                </span>
-
-              </div>
-
-              <p className="text-gray-400 text-sm leading-relaxed">
-                “A Taste That Feels Like Home.”
-              </p>
+              <span
+                className="
+                  text-2xl
+                  font-bold
+                  text-white
+                "
+                style={{
+                  fontFamily: "'Pacifico', cursive",
+                }}
+              >
+                RamPickelMart
+              </span>
 
             </div>
+
+            <p className="text-gray-400 text-sm leading-relaxed max-w-[250px]">
+              “A Taste That Feels Like Home.”
+            </p>
 
           </div>
 
           {/* Quick Links */}
-          <div
-            className="
-              bg-[#1f1f1f]
-              rounded-[28px]
-              p-6
-              border
-              border-gray-800
-              shadow-xl
-              min-h-[220px]
-            "
-          >
+          <div>
 
-            <h4 className="font-semibold text-white mb-5">
+            <h4 className="font-semibold text-white mb-5 text-lg">
               Quick Links
             </h4>
 
@@ -126,19 +98,9 @@ export default function Footer() {
           </div>
 
           {/* Shop */}
-          <div
-            className="
-              bg-[#1f1f1f]
-              rounded-[28px]
-              p-6
-              border
-              border-gray-800
-              shadow-xl
-              min-h-[220px]
-            "
-          >
+          <div>
 
-            <h4 className="font-semibold text-white mb-5">
+            <h4 className="font-semibold text-white mb-5 text-lg">
               Shop
             </h4>
 
@@ -154,19 +116,9 @@ export default function Footer() {
           </div>
 
           {/* Contact */}
-          <div
-            className="
-              bg-[#1f1f1f]
-              rounded-[28px]
-              p-6
-              border
-              border-gray-800
-              shadow-xl
-              min-h-[220px]
-            "
-          >
+          <div>
 
-            <h4 className="font-semibold text-white mb-5">
+            <h4 className="font-semibold text-white mb-5 text-lg">
               Contact Us
             </h4>
 
