@@ -1,5 +1,5 @@
 import banner from "../../assets/banner.jpg";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Hero() {
@@ -14,49 +14,69 @@ export default function Hero() {
       />
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40"></div>
+      <div className="absolute inset-0 bg-black/45"></div>
 
-      {/* Content Container */}
-      <div className="relative z-10 h-full flex items-center">
+      {/* Hero Content */}
+      <div className="relative z-10 flex h-full items-center justify-center">
 
-        {/* Left Side Text */}
-        <div className="w-full md:w-2/3 px-8 md:px-20 text-white flex flex-col justify-center h-full">
+        <div className="text-center px-6">
 
           {/* Welcome Text */}
-          <h2 className="text-2xl md:text-3xl font-light tracking-[8px] uppercase">
+          <h2
+            className="
+              text-xl
+              md:text-2xl
+              lg:text-3xl
+              font-semibold
+              tracking-[10px]
+              uppercase
+              text-white
+              drop-shadow-lg
+            "
+          >
             Welcome To
           </h2>
 
           {/* Brand Name */}
           <h1
             className="
-              mt-2
-              text-3xl
-              md:text-5xl
-              lg:text-6xl
+              mt-4
+              text-5xl
+              md:text-7xl
+              lg:text-8xl
               font-extrabold
               uppercase
-              leading-tight
-              break-words
-              bg-gradient-to-r
-              from-yellow-300
-              via-amber-400
-              to-orange-500
-              bg-clip-text
-              text-transparent
-              drop-shadow-2xl
+              leading-none
+              tracking-tight
+              text-[#f5cf68]
+              drop-shadow-[0_6px_18px_rgba(0,0,0,0.7)]
             "
+            style={{
+              fontFamily: "'Playfair Display', serif",
+            }}
           >
-            RamPickelMart
+            Rampickelmart
           </h1>
 
           {/* Caption */}
-          <p className="mt-6 text-lg md:text-xl text-gray-200 max-w-xl leading-relaxed">
+          <p
+            className="
+              mt-6
+              text-lg
+              md:text-2xl
+              font-semibold
+              text-white
+              max-w-2xl
+              leading-relaxed
+              drop-shadow-md
+              mx-auto
+            "
+          >
             Authentic Andhra flavors, made in small batches and delivered with care.
           </p>
 
           {/* Buttons */}
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
 
             {/* Shop Button */}
             <Link to="/shop">
@@ -70,8 +90,10 @@ export default function Hero() {
                   font-semibold
                   text-white
                   shadow-lg
-                  transition
+                  transition-all
+                  duration-300
                   hover:bg-orange-600
+                  hover:scale-105
                 "
               >
                 <span className="flex items-center">
@@ -94,9 +116,11 @@ export default function Hero() {
                   text-base
                   font-semibold
                   text-white
-                  transition
+                  transition-all
+                  duration-300
                   hover:bg-white
                   hover:text-black
+                  hover:scale-105
                 "
               >
                 Read our story
@@ -106,37 +130,6 @@ export default function Hero() {
           </div>
 
         </div>
-
-      </div>
-
-      {/* Left Arrow */}
-      <div className="absolute inset-y-0 left-4 flex items-center">
-        <button
-          type="button"
-          className="rounded-full bg-white/80 p-3 text-black shadow-lg hover:bg-white transition"
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </button>
-      </div>
-
-      {/* Right Arrow */}
-      <div className="absolute inset-y-0 right-4 flex items-center">
-        <button
-          type="button"
-          className="rounded-full bg-white/80 p-3 text-black shadow-lg hover:bg-white transition"
-        >
-          <ArrowRight className="h-5 w-5" />
-        </button>
-      </div>
-
-      {/* Bottom Dots */}
-      <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
-
-        <div className="h-2.5 w-2.5 rounded-full bg-orange-400"></div>
-
-        <div className="h-2.5 w-2.5 rounded-full bg-white/50"></div>
-
-        <div className="h-2.5 w-2.5 rounded-full bg-white/50"></div>
 
       </div>
 

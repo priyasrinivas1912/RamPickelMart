@@ -26,9 +26,24 @@ const Navbar = () => {
         </Link>
 
         <div className="text-center">
-          <div className="font-display text-xl font-semibold text-ink">Ram Pickel Mart</div>
-          <div className="text-xs uppercase tracking-[0.24em] text-muted-foreground">Flavors of Andhra</div>
-        </div>
+
+  {/* Creative Brand Name */}
+  <h1
+    className="text-3xl md:text-4xl font-black tracking-wide text-[#8B4513] drop-shadow-sm"
+    style={{
+      fontFamily: "'Pacifico', cursive",
+      letterSpacing: "1px",
+    }}
+  >
+    RamPickelMart
+  </h1>
+
+  {/* Subtitle */}
+  <p className="mt-1 text-xs uppercase tracking-[0.30em] text-[#7b6a58] font-semibold">
+    Flavors of Andhra
+  </p>
+
+</div>
 
         <div className="flex items-center justify-end gap-2">
           <nav className="hidden md:flex items-center gap-6 mr-4">
