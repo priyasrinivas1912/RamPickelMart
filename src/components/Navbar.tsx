@@ -21,7 +21,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-paper">
+    <header className="sticky top-0 z-50 border-b border-border bg-paper shadow-sm">
 
       <div className="container mx-auto px-4">
 
@@ -43,6 +43,8 @@ const Navbar = () => {
                   md:w-14
                   rounded-full
                   object-cover
+                  border-2
+                  border-[#8B4513]
                 "
               />
             </Link>
@@ -55,13 +57,13 @@ const Navbar = () => {
                   text-2xl
                   sm:text-3xl
                   md:text-4xl
-                  font-black
+                  font-extrabold
                   tracking-wide
                   text-[#8B4513]
-                  drop-shadow-sm
+                  leading-none
                 "
                 style={{
-                  fontFamily: "'Pacifico', cursive",
+                  fontFamily: "'Times New Roman', serif",
                   letterSpacing: "1px",
                 }}
               >
@@ -76,7 +78,11 @@ const Navbar = () => {
                   tracking-[0.24em]
                   text-muted-foreground
                   font-semibold
+                  mt-1
                 "
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                }}
               >
                 Flavors of Andhra
               </p>
@@ -96,12 +102,22 @@ const Navbar = () => {
                   to={link.to}
                   end={link.to === "/"}
                   className={({ isActive }) =>
-                    `text-sm font-medium transition-colors ${
-                      isActive
-                        ? "text-primary"
-                        : "text-foreground/75"
-                    }`
+                    `
+                      text-sm
+                      font-bold
+                      transition-colors
+                      duration-300
+                      hover:text-[#b14d1c]
+                      ${
+                        isActive
+                          ? "text-[#b14d1c]"
+                          : "text-foreground/80"
+                      }
+                    `
                   }
+                  style={{
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
                 >
                   {link.label}
                 </NavLink>
@@ -131,7 +147,7 @@ const Navbar = () => {
               <Button
                 type="button"
                 variant="ghost"
-                className="rounded-full px-4 text-sm font-medium text-ink hover:bg-muted"
+                className="rounded-full px-4 text-sm font-bold text-ink hover:bg-muted"
                 onClick={() => signOut().then(() => navigate("/"))}
               >
                 Sign out
@@ -140,7 +156,7 @@ const Navbar = () => {
               <Button
                 type="button"
                 variant="ghost"
-                className="rounded-full px-4 text-sm font-medium text-ink hover:bg-muted"
+                className="rounded-full px-4 text-sm font-bold text-ink hover:bg-muted"
                 onClick={() => navigate("/login")}
               >
                 Login
@@ -208,10 +224,13 @@ const Navbar = () => {
                   px-3
                   py-3
                   text-sm
-                  font-medium
+                  font-bold
                   text-foreground
                   hover:bg-muted
                 "
+                style={{
+                  fontFamily: "'Poppins', sans-serif",
+                }}
               >
                 {link.label}
               </Link>
@@ -229,7 +248,7 @@ const Navbar = () => {
                   px-3
                   py-3
                   text-sm
-                  font-medium
+                  font-bold
                   text-left
                   text-foreground
                   hover:bg-muted
@@ -246,7 +265,7 @@ const Navbar = () => {
                   px-3
                   py-3
                   text-sm
-                  font-medium
+                  font-bold
                   text-foreground
                   hover:bg-muted
                 "

@@ -11,31 +11,33 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />
-      <main>
-        <h1 className="sr-only">Ram Pickel Mart - Authentic Andhra pickles, podis & homemade foods</h1>
 
-        {/* Hero carousel with products below */}
+      <main>
+        <h1 className="sr-only">
+          Ram Pickel Mart - Authentic Andhra pickles, podis & homemade foods
+        </h1>
+
+        {/* HERO */}
         <Hero />
 
-        {/* Featured product image right after hero */}
+        {/* PRODUCTS */}
         <ProductSection />
 
-        {/* Carousel of category images */}
+        {/* CATEGORY CAROUSEL */}
         <CarouselSection />
 
-        {/* Why choose Ram Pickles (text under carousel) */}
+        {/* WHY US */}
         <WhyUs />
 
-        {/* Small stats banner */}
-        
-
-        
-
-        <Newsletter />
+        {/* STORY (MOVED UP) */}
         <Story />
+
+        {/* NEWSLETTER (MOVED DOWN) */}
+        <Newsletter />
 
         <div className="h-16 md:h-24" />
       </main>
+
       <Footer />
     </div>
   );

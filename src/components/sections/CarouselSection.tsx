@@ -3,15 +3,14 @@ import { useCallback, useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import honey from "@/assets/honey.jpg";
 import ghee from "@/assets/ghee.jpg";
-import sweet from "@/assets/sweet.jpg";
-import snacks from "@/assets/snacks.jpg";
+import sweets from "@/assets/sweets.jpg";
 import pickle from "@/assets/hero-pickle.jpg";
 
 const items = [
   { src: pickle, title: "Pickles", subtitle: "Sun-aged Andhra pickles packed with spice and heritage." },
   { src: honey, title: "Honey", subtitle: "Raw forest honey with floral sweetness and authentic flavor." },
   { src: ghee, title: "Ghee", subtitle: "Golden, slow-cooked ghee for rich aroma and smooth texture." },
-  { src: sweet, title: "Sweets", subtitle: "Traditional sweets made with care and balanced sweetness." },
+  { src: sweets, title: "Sweets", subtitle: "Traditional sweets made with care and balanced sweetness." },
 ];
 
 const CAPTION_POSITION: "left" | "right" = "left";
