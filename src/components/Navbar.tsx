@@ -5,7 +5,8 @@ import { ShoppingBag, Menu, X } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import logo from "@/assets/ram-pic.jpeg";
+
+import logo from "../assets/logo.jpg";
 
 const links = [
   { to: "/", label: "Home" },
@@ -21,50 +22,54 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-paper shadow-sm">
-
+    <header className="sticky top-0 z-50 border-b border-border bg-paper shadow-sm backdrop-blur-md">
+      
       <div className="container mx-auto px-4">
 
         {/* NAVBAR */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between py-3 md:py-4">
 
           {/* LEFT SIDE */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 md:w-1/3 min-w-0">
 
             {/* LOGO */}
-            <Link to="/">
+            <Link to="/" className="shrink-0">
               <img
                 src={logo}
                 alt="Ram Pickel Mart logo"
                 className="
-                  h-12
-                  w-12
+                  h-10
+                  w-10
+                  sm:h-12
+                  sm:w-12
                   md:h-14
                   md:w-14
                   rounded-full
                   object-cover
                   border-2
                   border-[#8B4513]
+                  shadow-sm
+                  transition-all
+                  duration-300
+                  hover:scale-105
                 "
               />
             </Link>
 
-            {/* BRAND */}
-            <div className="text-center">
+            {/* MOBILE / TABLET BRAND */}
+            <div className="md:hidden min-w-0">
 
               <h1
                 className="
-                  text-2xl
-                  sm:text-3xl
-                  md:text-4xl
+                  text-lg
+                  sm:text-2xl
                   font-extrabold
-                  tracking-wide
                   text-[#8B4513]
-                  leading-none
+                  truncate
+                  leading-tight
                 "
                 style={{
                   fontFamily: "'Times New Roman', serif",
-                  letterSpacing: "1px",
                 }}
               >
                 RamPickelMart
@@ -72,13 +77,12 @@ const Navbar = () => {
 
               <p
                 className="
-                  text-[10px]
-                  sm:text-xs
+                  text-[9px]
+                  sm:text-[10px]
                   uppercase
-                  tracking-[0.24em]
+                  tracking-[0.18em]
                   text-muted-foreground
                   font-semibold
-                  mt-1
                 "
                 style={{
                   fontFamily: "'Poppins', sans-serif",
@@ -91,11 +95,49 @@ const Navbar = () => {
 
           </div>
 
+          {/* DESKTOP BRAND */}
+          <div className="hidden md:flex flex-col items-center md:w-1/3">
+
+            <h1
+              className="
+                text-3xl
+                lg:text-4xl
+                font-extrabold
+                text-[#8B4513]
+                leading-none
+              "
+              style={{
+                fontFamily: "'Times New Roman', serif",
+                letterSpacing: "1px",
+              }}
+            >
+              RamPickelMart
+            </h1>
+
+            <p
+              className="
+                text-xs
+                uppercase
+                tracking-[0.24em]
+                text-muted-foreground
+                font-semibold
+                mt-1
+              "
+              style={{
+                fontFamily: "'Poppins', sans-serif",
+              }}
+            >
+              Flavors of Andhra
+            </p>
+
+          </div>
+
           {/* DESKTOP MENU */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center justify-end gap-6 md:w-1/3">
 
             {/* NAV LINKS */}
             <nav className="flex items-center gap-6">
+
               {links.map((link) => (
                 <NavLink
                   key={link.to}
@@ -122,6 +164,7 @@ const Navbar = () => {
                   {link.label}
                 </NavLink>
               ))}
+
             </nav>
 
             {/* CART */}
@@ -165,7 +208,7 @@ const Navbar = () => {
 
           </div>
 
-          {/* MOBILE MENU BUTTON */}
+          {/* MOBILE RIGHT SIDE */}
           <div className="flex md:hidden items-center gap-2">
 
             {/* CART */}
@@ -186,7 +229,7 @@ const Navbar = () => {
               )}
             </Button>
 
-            {/* MENU ICON */}
+            {/* MENU BUTTON */}
             <Button
               type="button"
               variant="ghost"
@@ -227,6 +270,7 @@ const Navbar = () => {
                   font-bold
                   text-foreground
                   hover:bg-muted
+                  transition-colors
                 "
                 style={{
                   fontFamily: "'Poppins', sans-serif",
@@ -252,6 +296,7 @@ const Navbar = () => {
                   text-left
                   text-foreground
                   hover:bg-muted
+                  transition-colors
                 "
               >
                 Sign out
@@ -268,6 +313,7 @@ const Navbar = () => {
                   font-bold
                   text-foreground
                   hover:bg-muted
+                  transition-colors
                 "
               >
                 Login

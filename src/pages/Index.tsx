@@ -1,38 +1,43 @@
+import React from "react";
+
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+
 import Hero from "../components/sections/Hero";
 import ProductSection from "../components/sections/ProductSection";
-import CarouselSection from "../components/sections/CarouselSection";
+import BestSellers from "../components/sections/BestSellers";
 import WhyUs from "../components/sections/WhyUs";
 import Newsletter from "../components/sections/Newsletter";
 import Story from "../components/sections/Story";
 
-const Index = () => {
+const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-paper">
       <Navbar />
 
       <main>
+        {/* SEO HEADING */}
         <h1 className="sr-only">
           Ram Pickel Mart - Authentic Andhra pickles, podis & homemade foods
         </h1>
 
-        {/* HERO */}
+        {/* HERO SECTION */}
         <Hero />
 
-        {/* PRODUCTS */}
+        {/* PRODUCT SECTION */}
         <ProductSection />
 
-        {/* CATEGORY CAROUSEL */}
-        <CarouselSection />
 
-        {/* WHY US */}
+        {/* BEST SELLERS SECTION */}
+        <BestSellers />
+
+        {/* WHY US SECTION */}
         <WhyUs />
 
-        {/* STORY (MOVED UP) */}
+        {/* STORY SECTION */}
         <Story />
 
-        {/* NEWSLETTER (MOVED DOWN) */}
+        {/* NEWSLETTER SECTION */}
         <Newsletter />
 
         <div className="h-16 md:h-24" />

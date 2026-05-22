@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Minus, Plus, Star, ShoppingBag, MessageCircle, Check, Truck, ShieldCheck } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getProduct, products } from "@/data/products";
+import { getProduct, products } from "@/data/productData";
 import { useCart } from "@/context/CartContext";
 import { Button } from "@/components/ui/button";
 import { SpiceLevel } from "@/components/SpiceLevel";

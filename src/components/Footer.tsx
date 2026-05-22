@@ -4,7 +4,7 @@ import {
   MapPin,
 } from "lucide-react";
 
-import logo from "../assets/ram-pic.jpeg";
+import logo from "../assets/logo.jpg";
 
 export default function Footer() {
   return (
@@ -12,7 +12,7 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* SAME LAYOUT FOR ALL DEVICES */}
+        {/* GRID */}
         <div
           className="
             grid
@@ -24,29 +24,66 @@ export default function Footer() {
           "
         >
 
-          {/* Brand */}
+          {/* BRAND */}
           <div>
 
             <div className="flex items-center gap-3 mb-5">
 
+              {/* RESPONSIVE LOGO */}
               <img
                 src={logo}
                 alt="RamPickelMart"
-                className="w-12 h-12 rounded-full object-cover"
+                className="
+                  h-10
+                  w-10
+                  sm:h-12
+                  sm:w-12
+                  md:h-14
+                  md:w-14
+                  rounded-full
+                  object-cover
+                  border-2
+                  border-amber-400
+                  shadow-md
+                  transition-all
+                  duration-300
+                  hover:scale-105
+                  flex-shrink-0
+                "
               />
 
-              <span
-                className="
-                  text-2xl
-                  font-bold
-                  text-white
-                "
-                style={{
-                  fontFamily: "'Pacifico', cursive",
-                }}
-              >
-                RamPickelMart
-              </span>
+              {/* BRAND NAME */}
+              <div>
+
+                <h2
+                  className="
+                    text-xl
+                    sm:text-2xl
+                    font-bold
+                    text-white
+                    leading-tight
+                  "
+                  style={{
+                    fontFamily: "'Times New Roman', serif",
+                  }}
+                >
+                  RamPickelMart
+                </h2>
+
+                <p
+                  className="
+                    text-[10px]
+                    sm:text-xs
+                    uppercase
+                    tracking-[0.2em]
+                    text-amber-300
+                    mt-1
+                  "
+                >
+                  Flavors of Andhra
+                </p>
+
+              </div>
 
             </div>
 
@@ -56,7 +93,7 @@ export default function Footer() {
 
           </div>
 
-          {/* Quick Links */}
+          {/* QUICK LINKS */}
           <div>
 
             <h4 className="font-semibold text-white mb-5 text-lg">
@@ -97,7 +134,7 @@ export default function Footer() {
 
           </div>
 
-          {/* Shop */}
+          {/* SHOP */}
           <div>
 
             <h4 className="font-semibold text-white mb-5 text-lg">
@@ -115,7 +152,7 @@ export default function Footer() {
 
           </div>
 
-          {/* Contact */}
+          {/* CONTACT */}
           <div>
 
             <h4 className="font-semibold text-white mb-5 text-lg">
@@ -154,7 +191,7 @@ export default function Footer() {
 
         </div>
 
-        {/* Bottom Bar */}
+        {/* BOTTOM BAR */}
         <div
           className="
             border-t

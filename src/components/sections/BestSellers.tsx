@@ -1,66 +1,195 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { products } from "@/data/products";
-import ProductCard from "@/components/ProductCard";
+// src/components/sections/BestSeller.tsx
 
-const PAGE_SIZE = 4;
+import React, { useMemo, useRef, useState } from "react";
+import ProductCard from "../ProductCard";
+import { products } from "../../data/productData";
 
-export default function BestSellers() {
-  const [page, setPage] = useState(0);
+const BestSeller: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<"best" | "new">("best");
+  const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  // Guard: if no products, render nothing
-  if (!products || products.length === 0) return null;
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) =>
+      activeTab === "best" ? p.isBestSeller : p.isNew
+    );
+  }, [activeTab]);
 
-  const totalPages = Math.ceil(products.length / PAGE_SIZE);
-  const visibleProducts = products.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const scroll = (direction: "left" | "right") => {
+    if (!scrollRef.current) return;
 
-  const prev = () => setPage((p) => Math.max(0, p - 1));
-  const next = () => setPage((p) => Math.min(totalPages - 1, p + 1));
+    const amount = 300;
+
+    scrollRef.current.scrollBy({
+      left: direction === "left" ? -amount : amount,
+      behavior: "smooth",
+    });
+  };
 
   return (
-    <section className="w-full px-4 md:px-10 py-10 bg-[#f7f1e8]">
+    <div style={styles.page}>
+      <section style={styles.section}>
+        <h1 style={styles.heading}>Shop Our Customers Favorite</h1>
 
-      {/* Header */}
-      <h2
-        className="text-3xl md:text-4xl font-extrabold text-[#b85c1a] mb-6"
-        style={{ fontFamily: "Georgia, serif" }}
-      >
-        Our Best Sellers
-      </h2>
-
-      {/* Product Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {visibleProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
-
-      {/* Pagination — only show if more than one page */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 mt-8">
+        {/* Tabs */}
+        <div style={styles.tabs}>
           <button
-            onClick={prev}
-            disabled={page === 0}
-            className="p-2 rounded-full border border-[#c0aa90] text-[#6b4e2a] hover:bg-[#ede4d6] disabled:opacity-30 transition"
-            aria-label="Previous page"
+            style={{
+              ...styles.tabButton,
+              ...(activeTab === "best" ? styles.activeTab : {}),
+            }}
+            onClick={() => setActiveTab("best")}
           >
-            <ChevronLeft size={18} />
+            Best Sellers
           </button>
 
-          <span className="text-sm font-medium text-[#6b4e2a]">
-            {page + 1}/{totalPages}
-          </span>
-
           <button
-            onClick={next}
-            disabled={page === totalPages - 1}
-            className="p-2 rounded-full border border-[#c0aa90] text-[#6b4e2a] hover:bg-[#ede4d6] disabled:opacity-30 transition"
-            aria-label="Next page"
+            style={{
+              ...styles.tabButton,
+              ...(activeTab === "new" ? styles.activeTab : {}),
+            }}
+            onClick={() => setActiveTab("new")}
           >
-            <ChevronRight size={18} />
+            New Arrivals
           </button>
         </div>
-      )}
-    </section>
+
+        <div style={styles.divider} />
+
+        {/* Carousel */}
+        <div style={styles.carouselWrap}>
+          <button style={styles.arrowBtn} onClick={() => scroll("left")}>
+            ‹
+          </button>
+
+          <div ref={scrollRef} style={styles.scrollRow}>
+            {filteredProducts.map((product) => (
+              <div key={product.id} style={styles.cardWrap}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+
+          <button
+            style={{
+              ...styles.arrowBtn,
+              right: 0,
+              background: "#4b250b",
+              color: "#fff",
+            }}
+            onClick={() => scroll("right")}
+          >
+            ›
+          </button>
+        </div>
+
+        <div style={styles.viewAllWrap}>
+          <button style={styles.viewAllBtn}>VIEW ALL</button>
+        </div>
+      </section>
+    </div>
   );
-}
+};
+
+const styles: Record<string, React.CSSProperties> = {
+  page: {
+    backgroundColor: "#f7f3ed",
+    minHeight: "100vh",
+    padding: "40px 24px 60px",
+    fontFamily: "Arial, sans-serif",
+  },
+
+  section: {
+    maxWidth: 1120,
+    margin: "0 auto",
+    position: "relative",
+  },
+
+  heading: {
+    textAlign: "center",
+    fontSize: 38,
+    margin: "8px 0 14px",
+    color: "#402412",
+    fontFamily: "Georgia, serif",
+    fontWeight: 700,
+  },
+
+  tabs: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 28,
+    marginBottom: 12,
+  },
+
+  tabButton: {
+    border: "none",
+    background: "transparent",
+    color: "#9b9286",
+    fontSize: 16,
+    cursor: "pointer",
+    paddingBottom: 8,
+  },
+
+  activeTab: {
+    color: "#3e2a1b",
+    borderBottom: "2px solid #5f4734",
+  },
+
+  divider: {
+    height: 1,
+    background: "#e2d9cf",
+    marginBottom: 28,
+  },
+
+  carouselWrap: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+  },
+
+  scrollRow: {
+    display: "flex",
+    gap: 16,
+    overflowX: "auto",
+    scrollBehavior: "smooth",
+    padding: "10px 4px",
+  },
+
+  cardWrap: {
+    minWidth: 250,
+    flexShrink: 0,
+  },
+
+  arrowBtn: {
+    position: "absolute",
+    top: "45%",
+    transform: "translateY(-50%)",
+    width: 38,
+    height: 38,
+    borderRadius: "50%",
+    border: "none",
+    background: "#ddd2c4",
+    color: "#8e7b67",
+    fontSize: 26,
+    cursor: "pointer",
+    zIndex: 2,
+  },
+
+  viewAllWrap: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: 40,
+  },
+
+  viewAllBtn: {
+    background: "#5a310f",
+    color: "#fff",
+    border: "none",
+    padding: "12px 34px",
+    borderRadius: 6,
+    letterSpacing: 1,
+    fontSize: 13,
+    cursor: "pointer",
+  },
+};
+
+export default BestSeller;

@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+
+import banner from "@/assets/banner.jpg";
 import honey from "@/assets/honey.jpg";
 import ghee from "@/assets/ghee.jpg";
 import sweets from "@/assets/sweets.jpg";
 import pickle from "@/assets/hero-pickle.jpg";
 
-const banners = [honey, ghee, sweets, pickle];
+
+const banners = [banner, honey, ghee, sweets, pickle];
+
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);

@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut, PackagePlus, PlusCircle, ShieldCheck, Trash2 } from "lucide-react";
-import { categories, Product, products as productSeed } from "@/data/products";
+import { categories, Product, products as productSeed } from "@/data/productData";
 
 type AdminTab = "products" | "add" | "orders";
 

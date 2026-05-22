@@ -3,14 +3,14 @@ import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProductCard from "@/components/ProductCard";
-import { categories, products, Category } from "@/data/products";
+import { categories, products } from "@/data/productData";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Shop = () => {
   const [params, setParams] = useSearchParams();
-  const activeCat = (params.get("cat") as Category | null) ?? null;
+  const activeCat = (params.get("cat") as string | null) ?? null;
   const qParam = params.get("q") ?? "";
   const [q, setQ] = useState(qParam);
 
@@ -22,7 +22,7 @@ const Shop = () => {
     });
   }, [activeCat, q]);
 
-  const setCat = (c: Category | null) => {
+  const setCat = (c: string | null) => {
     if (!c) setParams({}); else setParams({ cat: c });
   };
 
@@ -44,10 +44,10 @@ const Shop = () => {
               All
             </button>
             {categories.map((c) => (
-              <button key={c.name} onClick={() => setCat(c.name)}
+              <button key={c} onClick={() => setCat(c)}
                 className={cn("px-4 py-2 rounded-full text-sm font-medium border transition-all whitespace-nowrap",
-                  activeCat === c.name ? "bg-ink text-paper border-ink" : "bg-card text-foreground border-border hover:border-ink")}>
-                {c.name}
+                  activeCat === c? "bg-ink text-paper border-ink" : "bg-card text-foreground border-border hover:border-ink")}>
+                {c}
               </button>
             ))}
           </div>

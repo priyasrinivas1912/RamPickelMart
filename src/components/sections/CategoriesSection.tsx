@@ -1,4 +1,4 @@
-import { categories } from "@/data/products";
+import { categories } from "@/data/productData";
 
 const CategoriesSection = () => (
   <section className="container py-24" id="categories">
@@ -13,10 +13,10 @@ const CategoriesSection = () => (
     </div>
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {categories.map((category) => (
-        <div key={category.name} className="rounded-[2rem] bg-card p-8 border border-border/60 shadow-soft hover:shadow-elegant transition-all duration-300">
-          <span className="text-xs uppercase tracking-[0.3em] text-primary font-medium">{category.name}</span>
-          <h3 className="font-display text-2xl text-ink mt-4 mb-3">{category.name}</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">{category.description}</p>
+        <div key={category} className="rounded-[2rem] bg-card p-8 border border-border/60 shadow-soft hover:shadow-elegant transition-all duration-300">
+          <span className="text-xs uppercase tracking-[0.3em] text-primary font-medium">{category}</span>
+          <h3 className="font-display text-2xl text-ink mt-4 mb-3">{category}</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">{category}</p>
         </div>
       ))}
     </div>
