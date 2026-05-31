@@ -1,68 +1,92 @@
-create extension if not exists "pgcrypto" with schema "extensions";
+-- Ensure pgcrypto is available
+CREATE EXTENSION IF NOT EXISTS "pgcrypto" WITH SCHEMA "extensions";
 
-alter table public.profiles
-  add column if not exists id uuid default gen_random_uuid();
+-- Create profiles table with all required columns from scratch (if not exists)
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id         uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    uuid        NOT NULL UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
+  full_name  text,
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
 
-alter table public.profiles
-  alter column id set default gen_random_uuid();
+-- If table already exists, add missing columns safely
+ALTER TABLE public.profiles
+  ADD COLUMN IF NOT EXISTS id uuid DEFAULT gen_random_uuid();
 
-alter table public.profiles
-  alter column user_id set not null;
+ALTER TABLE public.profiles
+  ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT now();
 
-create unique index if not exists profiles_user_id_key
-  on public.profiles (user_id);
+-- Ensure id is the primary key (safe: ignored if already PK)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conrelid = 'public.profiles'::regclass
+      AND contype = 'p'
+  ) THEN
+    ALTER TABLE public.profiles ADD PRIMARY KEY (id);
+  END IF;
+END$$;
 
-create or replace function public.handle_new_user()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $$
-begin
-  insert into public.profiles (user_id, full_name)
-  values (
-    new.id,
-    coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'username')
+ALTER TABLE public.profiles
+  ALTER COLUMN id SET DEFAULT gen_random_uuid();
+
+ALTER TABLE public.profiles
+  ALTER COLUMN user_id SET NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS profiles_user_id_key
+  ON public.profiles (user_id);
+
+-- Trigger function: auto-create a profile row on new user signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  INSERT INTO public.profiles (user_id, full_name)
+  VALUES (
+    NEW.id,
+    COALESCE(NEW.raw_user_meta_data ->> 'full_name', NEW.raw_user_meta_data ->> 'username')
   )
-  on conflict (user_id) do update
-    set full_name = excluded.full_name,
+  ON CONFLICT (user_id) DO UPDATE
+    SET full_name  = EXCLUDED.full_name,
         updated_at = now();
 
-  return new;
-end;
+  RETURN NEW;
+END;
 $$;
 
-drop trigger if exists on_auth_user_created on auth.users;
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
-create trigger on_auth_user_created
-after insert on auth.users
-for each row
-execute function public.handle_new_user();
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
 
-alter table public.profiles enable row level security;
+-- Row Level Security
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
-drop policy if exists "Users can view own profile" on public.profiles;
-drop policy if exists "Users can insert own profile" on public.profiles;
-drop policy if exists "Users can update own profile" on public.profiles;
+DROP POLICY IF EXISTS "Users can view own profile"   ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 
-create policy "Users can view own profile"
-on public.profiles
-for select
-to authenticated
-using (auth.uid() = user_id);
+CREATE POLICY "Users can view own profile"
+  ON public.profiles FOR SELECT
+  TO authenticated
+  USING (auth.uid() = user_id);
 
-create policy "Users can insert own profile"
-on public.profiles
-for insert
-to authenticated
-with check (auth.uid() = user_id);
+CREATE POLICY "Users can insert own profile"
+  ON public.profiles FOR INSERT
+  TO authenticated
+  WITH CHECK (auth.uid() = user_id);
 
-create policy "Users can update own profile"
-on public.profiles
-for update
-to authenticated
-using (auth.uid() = user_id)
-with check (auth.uid() = user_id);
+CREATE POLICY "Users can update own profile"
+  ON public.profiles FOR UPDATE
+  TO authenticated
+  USING (auth.uid() = user_id)
+  WITH CHECK (auth.uid() = user_id);
 
-grant select, insert, update on table public.profiles to authenticated;
-grant all on table public.profiles to service_role;
+GRANT SELECT, INSERT, UPDATE ON TABLE public.profiles TO authenticated;
+GRANT ALL ON TABLE public.profiles TO service_role;
