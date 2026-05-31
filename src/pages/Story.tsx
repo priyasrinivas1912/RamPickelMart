@@ -16,13 +16,13 @@ const promises = [
 ];
 
 const StoryPage = () => (
-  <div className="min-h-screen bg-paper">
+  <div className="min-h-screen bg-white">
     <Navbar />
 
     <main>
 
       {/* HERO SECTION */}
-      <section className="bg-ink text-paper">
+      <section className="bg-white text-ink">
         <div className="container py-12 md:py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr] gap-8 md:gap-12 items-center">
 
           <div>
@@ -34,7 +34,7 @@ const StoryPage = () => (
               Andhra flavor, carried from family kitchens to your table.
             </h1>
 
-            <p className="mt-4 md:mt-7 max-w-2xl text-paper/80 text-sm sm:text-base md:text-lg leading-relaxed">
+            <p className="mt-4 md:mt-7 max-w-2xl text-muted-foreground text-sm sm:text-base md:text-lg leading-relaxed">
               Ram Pickel Mart began with the taste of home: mango pickle resting in oil, spice mixes roasted slowly, and recipes passed from one careful hand to another. We built this store to keep those flavors close for families who love honest Andhra food.
             </p>
           </div>
@@ -84,7 +84,7 @@ const StoryPage = () => (
       </section>
 
       {/* VALUES */}
-      <section className="bg-paper-warm border-y border-border">
+      <section className="bg-white border-y border-border">
 
         <div className="container py-10 md:py-16 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
 
@@ -128,7 +128,7 @@ const StoryPage = () => (
           {promises.map((item) => (
             <div key={item.title} className="text-center px-2 md:px-6">
 
-              <div className="mx-auto h-12 w-12 md:h-14 md:w-14 rounded-full bg-paper-warm text-primary grid place-items-center mb-3 md:mb-4">
+              <div className="mx-auto h-12 w-12 md:h-14 md:w-14 rounded-full bg-white text-primary grid place-items-center mb-3 md:mb-4 shadow-soft">
                 <item.icon className="h-5 w-5 md:h-6 md:w-6" />
               </div>
 

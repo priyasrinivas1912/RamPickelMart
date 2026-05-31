@@ -10,6 +10,12 @@ import { Button } from "@/components/ui/button";
 import { SpiceLevel } from "@/components/SpiceLevel";
 import ProductCard from "@/components/ProductCard";
 
+const getProductPrice = (price: string | number) => {
+  if (typeof price === "number") return price;
+  const value = Number(String(price).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(value) ? value : 0;
+};
+
 const ProductDetail = () => {
   const { slug = "" } = useParams();
   const product = getProduct(slug);
@@ -74,7 +80,7 @@ const ProductDetail = () => {
                 <button onClick={() => setQty((q) => q + 1)} className="h-14 w-14 grid place-items-center hover:text-primary"><Plus className="h-4 w-4" /></button>
               </div>
               <Button size="lg" onClick={() => add(product, qty)} className="flex-1 h-14 rounded-full bg-primary hover:bg-primary-glow text-primary-foreground shadow-elegant text-base">
-                <ShoppingBag className="h-4 w-4 mr-2" /> Add to basket — ₹{product.price * qty}
+                <ShoppingBag className="h-4 w-4 mr-2" /> Add to basket - Rs.{getProductPrice(product.price) * qty}
               </Button>
               <Button asChild size="lg" variant="outline" className="h-14 rounded-full border-leaf text-leaf hover:bg-leaf hover:text-paper">
                 <a href={wa} target="_blank" rel="noreferrer"><MessageCircle className="h-4 w-4 mr-2" /> WhatsApp</a>

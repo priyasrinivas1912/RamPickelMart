@@ -22,7 +22,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-paper shadow-sm backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-white shadow-sm backdrop-blur-md">
       
       <div className="container mx-auto px-4">
 
@@ -253,7 +253,7 @@ const Navbar = () => {
 
       {/* MOBILE MENU */}
       {mobileOpen && (
-        <div className="border-t border-border bg-paper md:hidden">
+        <div className="border-t border-border bg-white md:hidden">
 
           <nav className="container flex flex-col gap-2 py-4 w-full">
 

@@ -32,7 +32,7 @@ export type Product = {
   teluguName?: string;
   category: Category;
   image: string;
-  price: string;
+  price: number;
   tag?: string;
   rating: number;
   weights: readonly string[];
@@ -48,7 +48,7 @@ export const products: readonly Product[] = [
     teluguName: "ఆవకాయ పచ్చడి",
     category: "Veg Pickels",
     image: avakayaImg,
-    price: "Rs. 399.00",
+    price: 399,
     tag: "Top Selling",
     rating: 5,
     weights: ["1kg", "500g", "250g"],
@@ -62,7 +62,7 @@ export const products: readonly Product[] = [
     teluguName: "గోంగూర పచ్చడి",
     category: "Veg Pickels",
     image: gonguraImg,
-    price: "Rs. 250.00",
+    price: 250,
     tag: "New Arrival",
     rating: 4.5,
     weights: ["1kg", "500g", "250g"],
@@ -76,7 +76,7 @@ export const products: readonly Product[] = [
     teluguName: "చికెన్ పచ్చడి",
     category: "Non-Veg Pickels",
     image: chickenImg,
-    price: "Rs. 600.00",
+    price: 600,
     tag: "Best Seller",
     rating: 5,
     weights: ["1kg", "500g", "250g"],
@@ -90,7 +90,7 @@ export const products: readonly Product[] = [
     teluguName: "రొయ్యల పచ్చడి",
     category: "Non-Veg Pickels",
     image: prawnsImg,
-    price: "Rs. 499.00",
+    price: 499,
     tag: "Premium",
     rating: 4.8,
     weights: ["1kg", "500g", "250g"],
@@ -104,7 +104,7 @@ export const products: readonly Product[] = [
     teluguName: "స్వచ్ఛమైన తేనె",
     category: "Honey",
     image: honeyImg,
-    price: "Rs. 299.00",
+    price: 299,
     tag: "Natural",
     rating: 4.7,
     weights: ["1kg", "500g", "250g"],
@@ -118,7 +118,7 @@ export const products: readonly Product[] = [
     teluguName: "సాంప్రదాయ స్వీట్స్",
     category: "Sweets",
     image: sweetsImg,
-    price: "Rs. 299.00",
+    price: 299,
     tag: "Fresh",
     rating: 4.6,
     weights: ["1kg", "500g", "250g"],
@@ -132,7 +132,7 @@ export const products: readonly Product[] = [
     teluguName: "నెయ్యి",
     category: "Ghee",
     image: gheeImg,
-    price: "Rs. 399.00",
+    price: 399,
     tag: "Farm Fresh",
     rating: 4.9,
     weights: ["1kg", "500g", "250g"],

@@ -8,7 +8,7 @@ import logo from "../assets/logo.jpg";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white pt-16 pb-8 overflow-hidden">
+    <footer className="bg-[#0f1726] text-white pt-16 pb-8 overflow-hidden">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -195,7 +195,7 @@ export default function Footer() {
         <div
           className="
             border-t
-            border-gray-800
+            border-white/10
             pt-6
             text-center
             text-xs

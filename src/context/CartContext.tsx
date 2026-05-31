@@ -4,6 +4,8 @@ import { Product } from "@/data/productData";
 export interface CartItem {
   product: Product;
   quantity: number;
+  weight: string;
+  unitPrice: number;
 }
 
 interface CartCtx {
@@ -11,9 +13,9 @@ interface CartCtx {
   isOpen: boolean;
   open: () => void;
   close: () => void;
-  add: (product: Product, qty?: number) => void;
-  remove: (id: string) => void;
-  setQty: (id: string, qty: number) => void;
+  add: (product: Product, qty?: number, weight?: string) => void;
+  remove: (key: string) => void;
+  setQty: (key: string, qty: number) => void;
   clear: () => void;
   count: number;
   subtotal: number;
@@ -22,10 +24,27 @@ interface CartCtx {
 const Ctx = createContext<CartCtx | null>(null);
 const STORAGE_KEY = "pf_cart_v1";
 
+const getCartKey = (item: CartItem) => `${item.product.id}-${item.weight}`;
+
+const getProductPrice = (price: Product["price"]) => {
+  if (typeof price === "number") return price;
+  const value = Number(String(price).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(value) ? value : 0;
+};
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as Partial<CartItem>[];
+      return parsed
+        .filter((item): item is CartItem => Boolean(item.product && item.quantity))
+        .map((item) => ({
+          ...item,
+          weight: item.weight ?? item.product.weights?.[0] ?? "",
+          unitPrice: item.unitPrice && item.unitPrice > 0 ? item.unitPrice : getProductPrice(item.product.price),
+        }));
+    } catch { return []; }
   });
   const [isOpen, setOpen] = useState(false);
 
@@ -37,19 +56,19 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     items, isOpen,
     open: () => setOpen(true),
     close: () => setOpen(false),
-    add: (product, qty = 1) => {
+    add: (product, qty = 1, weight = product.weights?.[0] ?? "") => {
       setItems((prev) => {
-        const existing = prev.find((i) => i.product.id === product.id);
-        if (existing) return prev.map((i) => i.product.id === product.id ? { ...i, quantity: i.quantity + qty } : i);
-        return [...prev, { product, quantity: qty }];
+        const existing = prev.find((i) => i.product.id === product.id && i.weight === weight);
+        if (existing) return prev.map((i) => i.product.id === product.id && i.weight === weight ? { ...i, quantity: i.quantity + qty, unitPrice: i.unitPrice > 0 ? i.unitPrice : getProductPrice(product.price) } : i);
+        return [...prev, { product, quantity: qty, weight, unitPrice: getProductPrice(product.price) }];
       });
       setOpen(true);
     },
-    remove: (id) => setItems((prev) => prev.filter((i) => i.product.id !== id)),
-    setQty: (id, qty) => setItems((prev) => qty <= 0 ? prev.filter((i) => i.product.id !== id) : prev.map((i) => i.product.id === id ? { ...i, quantity: qty } : i)),
+    remove: (key) => setItems((prev) => prev.filter((i) => getCartKey(i) !== key)),
+    setQty: (key, qty) => setItems((prev) => qty <= 0 ? prev.filter((i) => getCartKey(i) !== key) : prev.map((i) => getCartKey(i) === key ? { ...i, quantity: qty } : i)),
     clear: () => setItems([]),
     count: items.reduce((n, i) => n + i.quantity, 0),
-    subtotal: items.reduce((s, i) => s + i.quantity * i.product.price, 0),
+    subtotal: items.reduce((s, i) => s + i.quantity * (i.unitPrice > 0 ? i.unitPrice : getProductPrice(i.product.price)), 0),
   }), [items, isOpen]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

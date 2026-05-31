@@ -3,6 +3,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import ProductCard from "../ProductCard";
 import { products } from "../../data/productData";
+import { Link } from "react-router-dom";
 
 const BestSeller: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"best" | "new">("best");
@@ -82,9 +83,13 @@ const BestSeller: React.FC = () => {
           </button>
         </div>
 
-        <div style={styles.viewAllWrap}>
-          <button style={styles.viewAllBtn}>VIEW ALL</button>
-        </div>
+        <div className="flex justify-center mt-12">
+  <Link to="/products">
+    <button className="px-10 py-4 bg-[#6B2E16] hover:bg-[#55220f] text-white rounded-xl transition-all duration-300 shadow-lg">
+      VIEW ALL
+    </button>
+  </Link>
+</div>
       </section>
     </div>
   );
@@ -92,7 +97,7 @@ const BestSeller: React.FC = () => {
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
-    backgroundColor: "#f7f3ed",
+    backgroundColor: "#ffffff",
     minHeight: "100vh",
     padding: "40px 24px 60px",
     fontFamily: "Arial, sans-serif",

@@ -1,15 +1,77 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+
 import { supabase } from "@/integrations/supabase/client";
-import type { User, Session } from "@supabase/supabase-js";
+
+import type {
+  User,
+  Session,
+} from "@supabase/supabase-js";
+
+type Profile = {
+  user_id: string;
+  full_name: string | null;
+  phone: string | null;
+  address_line1: string | null;
+  address_line2: string | null;
+  city: string | null;
+  state: string | null;
+  pincode: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+const configuredApiUrl = import.meta.env.VITE_API_URL;
+
+const API_URL =
+  configuredApiUrl && !configuredApiUrl.includes(":8080")
+    ? configuredApiUrl
+    : "http://localhost:5000";
+
+interface UpdateProfileInput {
+  full_name?: string;
+  phone?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+}
 
 interface AuthCtx {
   user: User | null;
   session: Session | null;
+  profile: Profile | null;
   loading: boolean;
 
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: Error | null }>;
-  updatePassword: (password: string, fullName?: string) => Promise<{ error: Error | null }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ error: Error | null }>;
+
+  signUp: (
+    email: string,
+    password: string,
+    fullName?: string
+  ) => Promise<{ error: Error | null }>;
+
+  sendOtp: (
+    email: string
+  ) => Promise<{
+    error: Error | null;
+    message?: string;
+  }>;
+
+  verifyOtp: (
+    email: string,
+    token: string
+  ) => Promise<{ error: Error | null }>;
+
   registerWithOtp: (
     email: string,
     otp: string,
@@ -17,120 +79,349 @@ interface AuthCtx {
     fullName?: string,
     userName?: string
   ) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<void>;
 
-  sendOtp: (
-    email: string,
-    mode?: "user" | "admin"
+  updateAccount: (
+    password: string,
+    fullName?: string
   ) => Promise<{ error: Error | null }>;
-  verifyOtp: (email: string, token: string, mode?: "user" | "admin") => Promise<{ error: Error | null }>;
+
+  getProfile: () => Promise<{
+    data: Profile | null;
+    error: Error | null;
+  }>;
+
+  updateProfile: (
+    payload: UpdateProfileInput
+  ) => Promise<{
+    data: Profile | null;
+    error: Error | null;
+  }>;
+
+  signOut: () => Promise<void>;
 }
 
 const Ctx = createContext<AuthCtx | null>(null);
 
-const getFunctionError = async (error: unknown) => {
-  if (!error) return null;
+export const AuthProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
+  const [user, setUser] =
+    useState<User | null>(null);
 
-  const context = (error as { context?: unknown }).context;
+  const [session, setSession] =
+    useState<Session | null>(null);
 
-  if (context instanceof Response) {
-    try {
-      const body = await context.json();
-      if (typeof body?.error === "string") return new Error(body.error);
-      if (typeof body?.message === "string") return new Error(body.message);
-    } catch {
-      // Fall back to the SDK error message below.
+  const [profile, setProfile] =
+    useState<Profile | null>(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const getProfile = async (): Promise<{
+    data: Profile | null;
+    error: Error | null;
+  }> => {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError) {
+      return {
+        data: null,
+        error: new Error(userError.message),
+      };
     }
-  }
 
-  return new Error(error instanceof Error ? error.message : "Unexpected Edge Function error.");
-};
+    if (!user) {
+      setProfile(null);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+      return {
+        data: null,
+        error: null,
+      };
+    }
 
-  useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const { data, error } =
+      await supabase
+        .from("profiles")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    if (error) {
+      return {
+        data: null,
+        error: new Error(error.message),
+      };
+    }
 
-    return () => subscription.unsubscribe();
-  }, []);
+    setProfile(data as Profile);
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error };
+    return {
+      data: data as Profile,
+      error: null,
+    };
   };
 
-  const signUp = async (email: string, password: string, fullName?: string) => {
-    const { error } = await supabase.auth.signUp({
+  const updateProfile = async (
+    payload: UpdateProfileInput
+  ): Promise<{
+    data: Profile | null;
+    error: Error | null;
+  }> => {
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError) {
+      return {
+        data: null,
+        error: new Error(userError.message),
+      };
+    }
+
+    if (!user) {
+      return {
+        data: null,
+        error: new Error(
+          "User not authenticated"
+        ),
+      };
+    }
+
+    const { data, error } =
+      await supabase
+        .from("profiles")
+        .update(payload)
+        .eq("user_id", user.id)
+        .select("*")
+        .single();
+
+    if (error) {
+      return {
+        data: null,
+        error: new Error(error.message),
+      };
+    }
+
+    setProfile(data as Profile);
+
+    return {
+      data: data as Profile,
+      error: null,
+    };
+  };
+
+  useEffect(() => {
+    const handleSession = async (
+      session: Session | null
+    ) => {
+      setSession(session);
+
+      setUser(session?.user ?? null);
+
+      if (session?.user) {
+        await getProfile();
+      } else {
+        setProfile(null);
+      }
+
+      setLoading(false);
+    };
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        void handleSession(session);
+      }
+    );
+
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        void handleSession(session);
+      });
+
+    return () =>
+      subscription.unsubscribe();
+  }, []);
+
+  const signIn = async (
+    email: string,
+    password: string
+  ) => {
+    const { error } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+    if (!error) {
+      await getProfile();
+    }
+
+    return {
+      error: error
+        ? new Error(error.message)
+        : null,
+    };
+  };
+
+  const signUp = async (
+    email: string,
+    password: string,
+    fullName?: string
+  ) => {
+    const { error } =
+      await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: fullName
+            ? { full_name: fullName }
+            : undefined,
+        },
+      });
+
+    return {
+      error: error
+        ? new Error(error.message)
+        : null,
+    };
+  };
+
+  const sendOtp = async (email: string) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/send-verification`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      }
+    );
+
+    const data = await response.json();
+
+    return {
+      error: response.ok
+        ? null
+        : new Error(data.message),
+      message: data.message,
+    };
+  } catch (error) {
+    return {
+      error: new Error("Failed to connect server"),
+    };
+  }
+};
+
+  const verifyOtp = async (
+  email: string,
+  token: string
+) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/verify-code`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          code: token,
+        }),
+      }
+    );
+
+    const data = await response.json();
+
+    return {
+      error: response.ok
+        ? null
+        : new Error(data.message),
+    };
+  } catch (error) {
+    return {
+      error: new Error("Verification failed"),
+    };
+  }
+};
+
+  const registerWithOtp = async (
+  email: string,
+  otp: string,
+  password: string,
+  fullName?: string,
+  userName?: string
+) => {
+  const { error } =
+    await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: window.location.origin,
-        data: fullName ? { full_name: fullName } : undefined,
+        data: {
+          full_name: fullName,
+          username: userName,
+        },
       },
     });
-    return { error };
+
+  return {
+    error: error
+      ? new Error(error.message)
+      : null,
   };
-
-  const updatePassword = async (password: string, fullName?: string) => {
-    const { error } = await supabase.auth.updateUser({
-      password,
-      data: fullName ? { full_name: fullName } : undefined,
-    });
-    return { error };
-  };
-
-  const sendOtp = async (email: string, mode: "user" | "admin" = "user") => {
-    const { error } = await supabase.functions.invoke("send-registration-otp", {
-      body: { email, mode },
-    });
-
-    return { error: await getFunctionError(error) };
-  };
-
-  const verifyOtp = async (email: string, token: string, mode: "user" | "admin" = "user") => {
-    const { error } = await supabase.functions.invoke("verify-registration-otp", {
-      body: { email, otp: token.trim(), mode },
-    });
-
-    return { error: await getFunctionError(error) };
-  };
-
-  const registerWithOtp = async (
-    email: string,
-    otp: string,
+};
+  const updateAccount = async (
     password: string,
-    fullName?: string,
-    userName?: string
+    fullName?: string
   ) => {
-    const { error } = await supabase.functions.invoke("complete-registration", {
-      body: { email, otp: otp.trim(), password, fullName, userName },
-    });
+    const { error } =
+      await supabase.auth.updateUser({
+        password,
+        data: fullName
+          ? { full_name: fullName }
+          : undefined,
+      });
 
-    if (error) return { error: await getFunctionError(error) };
-
-    return signIn(email, password);
+    return {
+      error: error
+        ? new Error(error.message)
+        : null,
+    };
   };
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setProfile(null);
   };
 
   return (
     <Ctx.Provider
-      value={{ user, session, loading, signIn, signUp, updatePassword, registerWithOtp, signOut, sendOtp, verifyOtp }}
+      value={{
+        user,
+        session,
+        profile,
+        loading,
+        signIn,
+        signUp,
+        sendOtp,
+        verifyOtp,
+        registerWithOtp,
+        updateAccount,
+        getProfile,
+        updateProfile,
+        signOut,
+      }}
     >
       {children}
     </Ctx.Provider>
@@ -139,6 +430,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAuth = () => {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+
+  if (!ctx) {
+    throw new Error(
+      "useAuth must be used within AuthProvider"
+    );
+  }
+
   return ctx;
 };

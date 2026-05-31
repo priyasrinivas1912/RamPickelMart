@@ -7,7 +7,7 @@ const Story = () => (
     className="
       relative
       overflow-hidden
-      bg-[#1f130d]
+      bg-[#21120d]
       text-[#fffaf3]
       py-20
       lg:py-32
@@ -171,7 +171,7 @@ const Story = () => (
             className="
               mt-8
               space-y-5
-              text-[#f8e7d8]/80
+              text-[#f8e7d8]/85
               leading-relaxed
               text-base
               sm:text-lg

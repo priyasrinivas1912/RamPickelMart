@@ -145,6 +145,65 @@ export type Database = {
         }
         Relationships: []
       }
+      ,
+      customer_reviews: {
+        Row: {
+          id: string
+          reviewer_name: string
+          review_text: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          reviewer_name: string
+          review_text: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          reviewer_name?: string
+          review_text?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
+      ,
+      reviews: {
+        Row: {
+          id: string
+          product_id: string
+          user_id: string
+          title: string
+          comment: string
+          rating: number
+          is_approved: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          product_id: string
+          user_id: string
+          title: string
+          comment: string
+          rating: number
+          is_approved?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string
+          user_id?: string
+          title?: string
+          comment?: string
+          rating?: number
+          is_approved?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

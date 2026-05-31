@@ -9,6 +9,7 @@ import CartDrawer from "./src/components/CartDrawer";
 import Index from "./src/pages/Index";
 import Shop from "./src/pages/Shop";
 import ProductDetail from "./src/pages/ProductDetail";
+import ProductsPage from "@/pages/ProductsPage";
 import Checkout from "./src/pages/Checkout";
 import Login from "./src/pages/Login";
 import Signup from "./src/pages/Signup";
@@ -24,17 +25,18 @@ const queryClient = new QueryClient();
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>          {/* ← ఇది తప్పనిసరి */}
+      <TooltipProvider>          
         <AuthProvider>
           <CartProvider>
-            <Toaster />            {/* ← toast కోసం */}
-            <Sonner />             {/* ← sonner toast కోసం */}
+            <Toaster />            
+            <Sonner />             
             <BrowserRouter>
               <CartDrawer />
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/shop" element={<Shop />} />
                 <Route path="/product/:slug" element={<ProductDetail />} />
+                <Route path="/products" element={<ProductsPage />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />

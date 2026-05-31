@@ -12,7 +12,7 @@ import Story from "../components/sections/Story";
 
 const Index: React.FC = () => {
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       <main>

@@ -1,5 +1,7 @@
 import React, { useMemo, useState } from "react";
 import type { Product } from "../data/productData";
+import { useCart } from "@/context/CartContext";
+import { toast } from "sonner";
 
 type ProductCardProps = {
   product: Product;
@@ -7,6 +9,7 @@ type ProductCardProps = {
 };
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { add } = useCart();
   const defaultWeight = product.weights?.[0] ?? "";
   const [selectedWeight, setSelectedWeight] = useState<string>(defaultWeight);
 
@@ -60,6 +63,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
         <button
           style={styles.cartButton}
+          onClick={() => {
+            add(product, 1, selectedWeight);
+            toast.success(`${product.name} added to basket`);
+          }}
           aria-label={`Add ${product.name} to cart`}
         >
           Add to Cart

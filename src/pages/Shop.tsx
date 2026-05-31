@@ -27,7 +27,7 @@ const Shop = () => {
   };
 
   return (
-    <div className="min-h-screen bg-paper">
+    <div className="min-h-screen bg-white">
       <Navbar />
       <main className="container py-12 lg:py-20">
         <header className="max-w-3xl mb-12">

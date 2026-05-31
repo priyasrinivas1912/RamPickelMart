@@ -5,44 +5,44 @@ const categories = [
   {
     id: 1,
     name: "Veg Pickles",
-    link: "/collections/veg-pickles",
+    link: "/shop?cat=Veg%20Pickels",
     color: "text-green-700",
   },
   {
     id: 2,
     name: "Non-Veg Pickles",
-    link: "/collections/non-veg",
+    link: "/shop?cat=Non-Veg%20Pickels",
     color: "text-red-700",
   },
   {
     id: 3,
     name: "Honey",
-    link: "/collections/honey",
+    link: "/shop?cat=Honey",
     color: "text-amber-700",
   },
   {
     id: 4,
     name: "Ghee",
-    link: "/collections/ghee",
+    link: "/shop?cat=Ghee",
     color: "text-yellow-700",
   },
   {
     id: 5,
     name: "Sweets",
-    link: "/collections/sweets",
+    link: "/shop?cat=Sweets",
     color: "text-pink-700",
   },
   {
     id: 6,
     name: "Snacks",
-    link: "/collections/snacks",
+    link: "/shop?cat=Snacks",
     color: "text-lime-700",
   },
 ];
 
 export default function ProductSection() {
   return (
-    <section className="bg-[#f7f1e7] py-20 overflow-hidden">
+    <section className="bg-white py-20 overflow-hidden">
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
