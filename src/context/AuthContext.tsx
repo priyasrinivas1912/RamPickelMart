@@ -28,10 +28,7 @@ type Profile = {
 
 const configuredApiUrl = import.meta.env.VITE_API_URL;
 
-const API_URL =
-  configuredApiUrl && !configuredApiUrl.includes(":8080")
-    ? configuredApiUrl
-    : "http://localhost:5000";
+const API_URL = configuredApiUrl || "http://localhost:5000";
 
 interface UpdateProfileInput {
   full_name?: string;

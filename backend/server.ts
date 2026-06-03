@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import nodemailer from "nodemailer";
 import path from "path";
 import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
 
 const projectRoot = path.resolve(__dirname, "..");
 
@@ -35,14 +36,22 @@ const hasSupabaseConfig = Boolean(
     !process.env.SUPABASE_SERVICE_ROLE_KEY.startsWith("PASTE_")
 );
 
-const hasEmailConfig = Boolean(
-  process.env.EMAIL_USER &&
-    process.env.EMAIL_PASS &&
-    !process.env.EMAIL_USER.startsWith("PASTE_") &&
-    !process.env.EMAIL_PASS.startsWith("PASTE_")
-);
+const emailUser = process.env.EMAIL_USER?.trim();
+const emailPassword = process.env.EMAIL_PASS?.replace(/\s+/g, "").trim();
+const resendApiKey = process.env.RESEND_API_KEY?.trim();
+const resendFromEmail = process.env.RESEND_FROM_EMAIL?.trim();
 
-const emailPassword = process.env.EMAIL_PASS?.replace(/\s+/g, "");
+const resendClient =
+  resendApiKey && resendFromEmail && resendApiKey.startsWith("re_")
+    ? new Resend(resendApiKey)
+    : null;
+
+const hasEmailConfig = Boolean(
+  emailUser &&
+    emailPassword &&
+    !emailUser.startsWith("PASTE_") &&
+    !emailPassword.startsWith("PASTE_")
+);
 
 const supabase = hasSupabaseConfig
   ? createClient(
@@ -55,7 +64,7 @@ const transporter = hasEmailConfig
   ? nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,
+        user: emailUser,
         pass: emailPassword,
       },
     })
@@ -135,11 +144,11 @@ app.post("/send-verification", async (req, res) => {
     return;
   }
 
-  if (transporter) {
+  if (resendClient) {
     try {
-      await transporter.sendMail({
-        from: `"Ram Pickel Mart" <${process.env.EMAIL_USER}>`,
-        to: email,
+      const emailResponse = await resendClient.emails.send({
+        from: resendFromEmail,
+        to: [email],
         subject: "Your Ram Pickel Mart OTP Code",
         text: `Your Ram Pickel Mart OTP code is ${code}. It is valid for 10 minutes.`,
         html: `
@@ -153,22 +162,76 @@ app.post("/send-verification", async (req, res) => {
         `,
       });
 
+      if ((emailResponse as any)?.error) {
+        throw new Error((emailResponse as any).error.message || "Resend email failed");
+      }
+
       res.json({
         success: true,
         message: "OTP sent to your email.",
       });
       return;
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Unable to send OTP email";
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("❌ Resend OTP email send failed:", errorMsg);
+      console.error("Resend sender:", resendFromEmail);
+    }
+  }
 
-      console.error("Unable to send OTP email:", message);
+  if (transporter) {
+    try {
+      await transporter.sendMail({
+        from: emailUser,
+        to: email,
+        replyTo: emailUser,
+        subject: "Your Ram Pickel Mart verification code",
+        text: `Your Ram Pickel Mart verification code is ${code}. It is valid for 10 minutes. If you did not request this code, you can ignore this email.`,
+        html: `
+          <div style="font-family: Arial, Helvetica, sans-serif; color: #2f2f2f; line-height: 1.5;">
+            <p>Hello,</p>
+            <p>Your Ram Pickel Mart verification code is:</p>
+            <p style="font-size: 32px; font-weight: 700; letter-spacing: 4px; color: #d97706;">${code}</p>
+            <p>This code is valid for 10 minutes.</p>
+            <p>If you did not request this code, you can ignore this email.</p>
+          </div>
+        `,
+      });
+
+      res.json({
+        success: true,
+        message: "OTP sent to your email.",
+      });
+      return;
+    } catch (error) {
+      const errorMsg =
+        error instanceof Error ? error.message : String(error);
+      const errorCode = (error as any)?.code;
+      const responseCode = (error as any)?.responseCode;
+      const response = (error as any)?.response;
+
+      console.error("❌ OTP email send failed:", errorMsg);
+      console.error("Error code:", errorCode);
+      console.error("Response code:", responseCode);
+      console.error("SMTP response:", response);
+      
+      let userMessage =
+        "Unable to send OTP email. Check EMAIL_USER and Gmail App Password.";
+      if (
+        errorMsg.includes("Invalid login") ||
+        errorMsg.includes("invalid_grant")
+      ) {
+        userMessage =
+          "Email authentication failed. Gmail app password may be incorrect or expired.";
+      } else if (
+        errorMsg.includes("ECONNREFUSED") ||
+        errorMsg.includes("timeout")
+      ) {
+        userMessage = "Email service unreachable. Check network connection.";
+      }
+      
       res.status(500).json({
         success: false,
-        message:
-          "Unable to send OTP email. Check EMAIL_USER and Gmail App Password.",
+        message: userMessage,
       });
       return;
     }
@@ -259,6 +322,31 @@ app.post("/verify-code", async (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on http://localhost:${PORT}`);
+  
+  if (transporter) {
+    try {
+      await transporter.verify();
+      console.log("✓ Email service verified - SMTP ready");
+      console.log(`   Gmail sender: ${emailUser}`);
+      console.log(`   Gmail app password length: ${emailPassword?.length ?? 0}`);
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error("✗ Email service verification failed:", errMsg);
+      console.error(
+        "Check your EMAIL_USER and Gmail App Password in .env.local"
+      );
+      if (
+        errMsg.includes("Invalid login") ||
+        errMsg.includes("invalid_grant")
+      ) {
+        console.error(
+          "Gmail app password may be expired or incorrect. Generate a new one at https://myaccount.google.com/apppasswords"
+        );
+      }
+    }
+  } else {
+    console.warn("⚠ Email not configured - OTP emails will not be sent");
+  }
 });
