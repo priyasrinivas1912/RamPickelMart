@@ -1,4 +1,4 @@
-import { categories } from "@/data/products";
+import { categories } from "@/data/productData";
 
 const CategoriesSection = () => (
   <section className="container py-24" id="categories">

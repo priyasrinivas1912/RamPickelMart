@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { products } from "@/data/products";
+import { products } from "@/data/productData";
 import ProductCard from "@/components/ProductCard";
 
 const PAGE_SIZE = 4;

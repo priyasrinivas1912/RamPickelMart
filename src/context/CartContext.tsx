@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
-import { Product } from "@/data/products";
+import { Product } from "@/data/productData";
 
 export interface CartItem {
   product: Product;
   quantity: number;
+  unitPrice: number;
 }
 
 interface CartCtx {
@@ -22,10 +23,24 @@ interface CartCtx {
 const Ctx = createContext<CartCtx | null>(null);
 const STORAGE_KEY = "pf_cart_v1";
 
+const getProductPrice = (price: string | number | undefined) => {
+  if (typeof price === "number") return price;
+  const value = Number(String(price ?? "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(value) ? value : 0;
+};
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+    try {
+      const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as Partial<CartItem>[];
+      return parsed
+        .filter((item): item is CartItem => Boolean(item.product && item.quantity))
+        .map((item) => ({
+          ...item,
+          unitPrice: item.unitPrice && item.unitPrice > 0 ? item.unitPrice : getProductPrice(item.product.price),
+        }));
+    } catch { return []; }
   });
   const [isOpen, setOpen] = useState(false);
 
@@ -40,8 +55,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     add: (product, qty = 1) => {
       setItems((prev) => {
         const existing = prev.find((i) => i.product.id === product.id);
-        if (existing) return prev.map((i) => i.product.id === product.id ? { ...i, quantity: i.quantity + qty } : i);
-        return [...prev, { product, quantity: qty }];
+        if (existing) return prev.map((i) => i.product.id === product.id ? { ...i, quantity: i.quantity + qty, unitPrice: i.unitPrice > 0 ? i.unitPrice : getProductPrice(product.price) } : i);
+        return [...prev, { product, quantity: qty, unitPrice: getProductPrice(product.price) }];
       });
       setOpen(true);
     },
@@ -49,7 +64,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setQty: (id, qty) => setItems((prev) => qty <= 0 ? prev.filter((i) => i.product.id !== id) : prev.map((i) => i.product.id === id ? { ...i, quantity: qty } : i)),
     clear: () => setItems([]),
     count: items.reduce((n, i) => n + i.quantity, 0),
-    subtotal: items.reduce((s, i) => s + i.quantity * i.product.price, 0),
+    subtotal: items.reduce((s, i) => s + i.quantity * (i.unitPrice > 0 ? i.unitPrice : getProductPrice(i.product.price)), 0),
   }), [items, isOpen]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

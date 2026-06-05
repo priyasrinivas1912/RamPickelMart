@@ -128,7 +128,7 @@ export default function Footer() {
 
                 <Mail className="w-4 h-4 text-amber-300 flex-shrink-0" />
 
-                support@rampickelmart.com
+                Supportrampickelmart@gmail.com
 
               </p>
 
