@@ -49,7 +49,7 @@ const readApiMessage = async (
 const fetchWithTimeout = async (
   url: string,
   options: RequestInit,
-  timeoutMs = 15000
+  timeoutMs = 60000
 ) => {
   const controller = new AbortController();
   const timeout = window.setTimeout(
