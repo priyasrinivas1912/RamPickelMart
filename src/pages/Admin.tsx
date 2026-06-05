@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { LogOut, PackagePlus, PlusCircle, ShieldCheck, Trash2 } from "lucide-react";
-import { categories, Product, products as productSeed } from "@/data/productData";
+import { categories, type Category, Product, products as productSeed } from "@/data/productData";
 
 type AdminTab = "products" | "add" | "orders";
 
@@ -20,14 +20,23 @@ type AdminProduct = Product & {
 const asAdminProduct = (product: Product): AdminProduct => ({
   ...product,
   actualPrice: Math.round(product.price * 1.6),
-  stock: product.inStock ? 12 : 0,
+  stock: product.inStock === false ? 0 : 12,
 });
 
-const emptyProduct = {
+type ProductDraft = {
+  name: string;
+  actualPrice: string;
+  offerPrice: string;
+  category: Category;
+  image: string;
+  stock: string;
+};
+
+const emptyProduct: ProductDraft = {
   name: "",
   actualPrice: "",
   offerPrice: "",
-  category: "Pickles",
+  category: categories[0],
   image: "",
   stock: "1",
 };
@@ -40,7 +49,7 @@ const Admin = () => {
   const [adminPassword, setAdminPassword] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
   const [adminProducts, setAdminProducts] = useState<AdminProduct[]>(() => productSeed.map(asAdminProduct));
-  const [draft, setDraft] = useState(emptyProduct);
+  const [draft, setDraft] = useState<ProductDraft>(emptyProduct);
 
   const totalStock = useMemo(() => adminProducts.reduce((sum, product) => sum + product.stock, 0), [adminProducts]);
 
@@ -64,12 +73,12 @@ const Admin = () => {
     navigate("/login");
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     setAdminProducts((items) => items.filter((product) => product.id !== id));
     toast.success("Product removed from admin list.");
   };
 
-  const handleAddStock = (id: string) => {
+  const handleAddStock = (id: number) => {
     setAdminProducts((items) =>
       items.map((product) => (product.id === id ? { ...product, stock: product.stock + 1, inStock: true } : product)),
     );
@@ -86,25 +95,23 @@ const Admin = () => {
       return;
     }
 
-    const id = draft.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+    const id = Math.max(0, ...adminProducts.map((product) => product.id)) + 1;
     const fallbackImage = productSeed[0]?.image ?? "";
     const newProduct: AdminProduct = {
       id,
-      slug: id,
       name: draft.name,
-      category: draft.category as Product["category"],
+      category: draft.category,
       actualPrice,
       price,
-      weight: "500 g",
       spiceLevel: 3,
       rating: 0,
       reviewCount: 0,
       inStock: stock > 0,
       stock,
       image: draft.image || fallbackImage,
-      short: "New product added from admin.",
       description: "New product added from the admin panel.",
       ingredients: [],
+      weights: ["500g"],
     };
 
     setAdminProducts((items) => [newProduct, ...items]);
@@ -270,12 +277,12 @@ const Admin = () => {
               <select
                 id="category"
                 value={draft.category}
-                onChange={(event) => setDraft({ ...draft, category: event.target.value })}
+                onChange={(event) => setDraft({ ...draft, category: event.target.value as Category })}
                 className="h-10 w-full rounded-xl border border-input bg-background px-3 text-sm"
               >
                 {categories.map((category) => (
-                  <option key={category.name} value={category.name}>
-                    {category.name}
+                  <option key={category} value={category}>
+                    {category}
                   </option>
                 ))}
               </select>

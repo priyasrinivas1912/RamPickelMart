@@ -1,4 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
@@ -14,6 +13,10 @@ import { toast } from "sonner";
 
 const inputClass =
   "h-[52px] rounded-[4px] border-[#f2a51a] bg-white px-4 text-[18px] font-semibold text-black placeholder:text-slate-400 focus-visible:ring-[#d97706]";
+
+const normalizeEmail = (value: string) => value.trim().toLowerCase();
+const sanitizeOtp = (value: string) =>
+  value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -55,6 +58,9 @@ const Signup = () => {
   const [emailVerified, setEmailVerified] =
     useState(false);
 
+  const [verifiedEmail, setVerifiedEmail] =
+    useState("");
+
   const [loading, setLoading] =
     useState(false);
 
@@ -68,6 +74,9 @@ const Signup = () => {
     `${firstName} ${lastName}`.trim() ||
     userName;
 
+  const normalizedEmail = normalizeEmail(email);
+  const sanitizedOtp = sanitizeOtp(otp);
+
   useEffect(() => {
     if (!authLoading && user) {
       navigate("/", { replace: true });
@@ -75,32 +84,32 @@ const Signup = () => {
   }, [authLoading, user, navigate]);
 
   const handleSendOtp = async () => {
-  console.log("Send OTP clicked");
+    if (!normalizedEmail) {
+      toast.error("Enter your email first.");
+      return;
+    }
 
-  if (!email) {
-    toast.error("Enter your email first.");
-    return;
-  }
+    setSendingOtp(true);
 
-  setSendingOtp(true);
+    const { error, message } =
+      await sendOtp(normalizedEmail);
 
-  const { error, message } = await sendOtp(email);
+    setSendingOtp(false);
 
-  setSendingOtp(false);
+    if (error) {
+      toast.error(
+        error.message || "Failed to send OTP"
+      );
+      return;
+    }
 
-  console.log("Error:", error);
-
-  if (error) {
-    toast.error(
-      error.message || "Failed to send OTP"
+    toast.success(
+      message || "OTP sent to your email."
     );
-    return;
-  }
+  };
 
-  toast.success(message || "OTP sent to email.");
-};
   const handleVerifyOtp = async () => {
-    if (!otp) {
+    if (!normalizedEmail || !sanitizedOtp) {
       toast.error("Enter OTP");
       return;
     }
@@ -108,8 +117,8 @@ const Signup = () => {
     setVerifyingOtp(true);
 
     const { error } = await verifyOtp(
-      email,
-      otp
+      normalizedEmail,
+      sanitizedOtp
     );
 
     setVerifyingOtp(false);
@@ -122,6 +131,7 @@ const Signup = () => {
     }
 
     setEmailVerified(true);
+    setVerifiedEmail(normalizedEmail);
 
     toast.success("Email verified.");
   };
@@ -131,7 +141,10 @@ const Signup = () => {
   ) => {
     event.preventDefault();
 
-    if (!emailVerified) {
+    if (
+      !emailVerified ||
+      verifiedEmail !== normalizedEmail
+    ) {
       toast.error(
         "Please verify OTP first."
       );
@@ -156,8 +169,8 @@ const Signup = () => {
 
     const { error } =
       await registerWithOtp(
-        email,
-        otp,
+        normalizedEmail,
+        sanitizedOtp,
         password,
         fullName,
         userName
@@ -238,9 +251,11 @@ const Signup = () => {
               id="email"
               type="email"
               value={email}
-              onChange={(event) =>
-                setEmail(event.target.value)
-              }
+              onChange={(event) => {
+                setEmail(event.target.value);
+                setEmailVerified(false);
+                setVerifiedEmail("");
+              }}
               placeholder="enter your Email ID"
               required
               className={inputClass}
@@ -274,9 +289,13 @@ const Signup = () => {
               id="otp"
               value={otp}
               onChange={(event) =>
-                setOtp(event.target.value)
+                setOtp(
+                  sanitizeOtp(event.target.value)
+                )
               }
               placeholder="Enter OTP"
+              maxLength={6}
+              autoComplete="one-time-code"
               className={inputClass}
             />
 
@@ -390,7 +409,9 @@ const Signup = () => {
 
           <Button
             disabled={
-              loading || !emailVerified
+              loading ||
+              !emailVerified ||
+              verifiedEmail !== normalizedEmail
             }
             className="h-[52px] w-full rounded-[4px] bg-[#df7b00] text-xl font-bold text-white hover:bg-[#c96f00]"
           >

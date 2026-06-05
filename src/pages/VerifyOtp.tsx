@@ -11,8 +11,10 @@ const inputClass =
   "h-[52px] rounded-[4px] border-[#f2a51a] bg-white px-4 text-[18px] font-semibold text-black placeholder:text-slate-400 focus-visible:ring-[#d97706]";
 
 function sanitizeOtp(raw: string) {
-  return raw.replace(/[^a-zA-Z0-9]/g, "");
+  return raw.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
 }
+
+const normalizeEmail = (value: string) => value.trim().toLowerCase();
 
 const VerifyOtp = () => {
   const navigate = useNavigate();
@@ -26,15 +28,16 @@ const VerifyOtp = () => {
   const [otp, setOtp] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [sending, setSending] = useState(false);
+  const normalizedEmail = normalizeEmail(email);
 
   const handleSend = async () => {
-    if (!email) {
+    if (!normalizedEmail) {
       toast.error("Enter your email first.");
       return;
     }
 
     setSending(true);
-    const { error } = await sendOtp(email);
+    const { error } = await sendOtp(normalizedEmail);
     setSending(false);
 
     if (error) {
@@ -49,13 +52,13 @@ const VerifyOtp = () => {
     event.preventDefault();
     const token = sanitizeOtp(otp);
 
-    if (!email || !token) {
+    if (!normalizedEmail || !token) {
       toast.error("Enter email and OTP.");
       return;
     }
 
     setSubmitting(true);
-    const { error } = await verifyOtp(email, token);
+    const { error } = await verifyOtp(normalizedEmail, token);
     setSubmitting(false);
 
     if (error) {
@@ -106,9 +109,10 @@ const VerifyOtp = () => {
             <Input
               id="otp"
               value={otp}
-              onChange={(event) => setOtp(event.target.value)}
+              onChange={(event) => setOtp(sanitizeOtp(event.target.value))}
               placeholder="enter OTP from email"
               autoComplete="one-time-code"
+              maxLength={6}
               required
               className={`${inputClass} tracking-widest`}
             />

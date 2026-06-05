@@ -26,6 +26,11 @@ const ProductDetail = () => {
 
   const related = products.filter((p) => p.id !== product.id).slice(0, 3);
   const wa = `https://wa.me/919999999999?text=Hi! I'd like to order ${product.name} × ${qty}`;
+  const weight = product.weights?.[0] ?? "";
+  const reviewCount = product.reviewCount ?? 0;
+  const spiceLevel = product.spiceLevel ?? 0;
+  const description = product.description ?? `${product.name} from Ram Pickel Mart.`;
+  const ingredients = product.ingredients ?? [];
 
   return (
     <div className="min-h-screen bg-paper">
@@ -54,17 +59,17 @@ const ProductDetail = () => {
                     <Star key={i} className={`h-4 w-4 ${i < Math.round(product.rating) ? "fill-secondary text-secondary" : "text-muted"}`} />
                   ))}
                 </div>
-                <span className="text-muted-foreground">{product.rating} ({product.reviewCount} reviews)</span>
+                <span className="text-muted-foreground">{product.rating} ({reviewCount} reviews)</span>
               </div>
-              <SpiceLevel level={product.spiceLevel} />
+              <SpiceLevel level={spiceLevel} />
             </div>
 
-            <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{product.description}</p>
+            <p className="mt-6 text-lg text-muted-foreground leading-relaxed">{description}</p>
 
             <div className="mt-8 flex items-baseline gap-3">
               <span className="font-display text-4xl text-primary font-semibold">₹{product.price}</span>
-              <span className="text-muted-foreground">/ {product.weight}</span>
-              {product.inStock ? (
+              {weight && <span className="text-muted-foreground">/ {weight}</span>}
+              {product.inStock !== false ? (
                 <span className="ml-3 inline-flex items-center gap-1 text-xs text-leaf font-medium">
                   <Check className="h-3.5 w-3.5" /> In stock
                 </span>
@@ -101,7 +106,7 @@ const ProductDetail = () => {
             <div className="mt-10 pt-8 border-t border-border">
               <h2 className="font-display text-2xl text-ink mb-4">Ingredients</h2>
               <div className="flex flex-wrap gap-2">
-                {product.ingredients.map((i) => (
+                {ingredients.map((i) => (
                   <span key={i} className="px-4 py-2 rounded-full bg-card border border-border text-sm text-foreground/80">{i}</span>
                 ))}
               </div>

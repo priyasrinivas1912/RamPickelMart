@@ -28,7 +28,44 @@ type Profile = {
 
 const configuredApiUrl = import.meta.env.VITE_API_URL;
 
-const API_URL = configuredApiUrl || "http://localhost:5000";
+const API_URL = (
+  configuredApiUrl || "http://localhost:5000"
+).replace(/\/+$/, "");
+
+const readApiMessage = async (
+  response: Response
+) => {
+  try {
+    const data = (await response.json()) as {
+      message?: string;
+    };
+
+    return data.message;
+  } catch {
+    return undefined;
+  }
+};
+
+const fetchWithTimeout = async (
+  url: string,
+  options: RequestInit,
+  timeoutMs = 15000
+) => {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(
+    () => controller.abort(),
+    timeoutMs
+  );
+
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    });
+  } finally {
+    window.clearTimeout(timeout);
+  }
+};
 
 interface UpdateProfileInput {
   full_name?: string;
@@ -294,7 +331,7 @@ export const AuthProvider = ({
 
   const sendOtp = async (email: string) => {
   try {
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `${API_URL}/send-verification`,
       {
         method: "POST",
@@ -305,17 +342,25 @@ export const AuthProvider = ({
       }
     );
 
-    const data = await response.json();
+    const message = await readApiMessage(response);
 
     return {
       error: response.ok
         ? null
-        : new Error(data.message),
-      message: data.message,
+        : new Error(
+            message || "Failed to send OTP"
+          ),
+      message,
     };
   } catch (error) {
+    const message =
+      error instanceof DOMException &&
+      error.name === "AbortError"
+        ? "OTP server timed out. Please try again."
+        : "Failed to connect server";
+
     return {
-      error: new Error("Failed to connect server"),
+      error: new Error(message),
     };
   }
 };
@@ -325,7 +370,7 @@ export const AuthProvider = ({
   token: string
 ) => {
   try {
-    const response = await fetch(
+    const response = await fetchWithTimeout(
       `${API_URL}/verify-code`,
       {
         method: "POST",
@@ -339,16 +384,24 @@ export const AuthProvider = ({
       }
     );
 
-    const data = await response.json();
+    const message = await readApiMessage(response);
 
     return {
       error: response.ok
         ? null
-        : new Error(data.message),
+        : new Error(
+            message || "OTP verification failed"
+          ),
     };
   } catch (error) {
+    const message =
+      error instanceof DOMException &&
+      error.name === "AbortError"
+        ? "OTP server timed out. Please try again."
+        : "Verification failed";
+
     return {
-      error: new Error("Verification failed"),
+      error: new Error(message),
     };
   }
 };
@@ -360,6 +413,12 @@ export const AuthProvider = ({
   fullName?: string,
   userName?: string
 ) => {
+  if (!otp) {
+    return {
+      error: new Error("OTP verification required"),
+    };
+  }
+
   const { error } =
     await supabase.auth.signUp({
       email,
