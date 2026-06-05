@@ -33,7 +33,7 @@ const items = [
 const WhyUs = () => (
   <section
     id="why-us"
-    className="py-20 md:py-24 overflow-hidden bg-[#fffaf5]"
+    className="py-20 md:py-24 overflow-hidden bg-white"
   >
 
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

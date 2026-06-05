@@ -11,6 +11,18 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { CreditCard, Lock, Truck } from "lucide-react";
 
+const getCartKey = (item: { product: { id: number }; weight: string }) =>
+  `${item.product.id}-${item.weight}`;
+
+const getProductPrice = (price: string | number) => {
+  if (typeof price === "number") return price;
+  const value = Number(String(price).replace(/[^0-9.]/g, ""));
+  return Number.isFinite(value) ? value : 0;
+};
+
+const getItemPrice = (item: { unitPrice: number; product: { price: string | number } }) =>
+  item.unitPrice > 0 ? item.unitPrice : getProductPrice(item.product.price);
+
 const Checkout = () => {
   const { items, subtotal, clear } = useCart();
   const { user } = useAuth();
@@ -41,10 +53,10 @@ const Checkout = () => {
         items: items.map((i) => ({
           id: i.product.id,
           name: i.product.name,
-          price: i.product.price,
+          price: getItemPrice(i),
           quantity: i.quantity,
           image: i.product.image,
-          weight: i.product.weight,
+          weight: i.weight,
         })),
         shipping_address: {
           full_name: String(fd.get("full_name") || ""),
@@ -118,7 +130,7 @@ const Checkout = () => {
               </section>
 
               <Button type="submit" disabled={submitting} className="w-full h-14 rounded-full bg-ink text-paper hover:bg-primary text-base">
-                <Lock className="h-4 w-4 mr-2" /> {submitting ? "Placing…" : `Place order — ₹${total}`}
+                <Lock className="h-4 w-4 mr-2" /> {submitting ? "Placing…" : `Place order — Rs.${total}`}
               </Button>
             </form>
 
@@ -127,20 +139,20 @@ const Checkout = () => {
                 <h2 className="font-display text-xl text-ink mb-5">Order Summary</h2>
                 <ul className="space-y-4 mb-6">
                   {items.map((i) => (
-                    <li key={i.product.id} className="flex gap-3">
+                    <li key={getCartKey(i)} className="flex gap-3">
                       <img src={i.product.image} alt="" className="w-16 h-16 rounded-xl object-cover" />
                       <div className="flex-1 text-sm">
                         <div className="font-medium text-ink">{i.product.name}</div>
-                        <div className="text-xs text-muted-foreground">Qty {i.quantity} · {i.product.weight}</div>
+                        <div className="text-xs text-muted-foreground">Qty {i.quantity} · {i.weight}</div>
                       </div>
-                      <div className="text-sm font-medium">₹{i.product.price * i.quantity}</div>
+                      <div className="text-sm font-medium">Rs.{getItemPrice(i) * i.quantity}</div>
                     </li>
                   ))}
                 </ul>
                 <div className="space-y-2 text-sm pt-5 border-t border-border">
-                  <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>₹{subtotal}</span></div>
-                  <div className="flex justify-between text-muted-foreground"><span>Shipping</span><span>{shipping === 0 ? "Free" : `₹${shipping}`}</span></div>
-                  <div className="flex justify-between font-display text-xl text-ink pt-3 border-t border-border mt-2"><span>Total</span><span>₹{total}</span></div>
+                  <div className="flex justify-between text-muted-foreground"><span>Subtotal</span><span>Rs.{subtotal}</span></div>
+                  <div className="flex justify-between text-muted-foreground"><span>Shipping</span><span>{shipping === 0 ? "Free" : `Rs.${shipping}`}</span></div>
+                  <div className="flex justify-between font-display text-xl text-ink pt-3 border-t border-border mt-2"><span>Total</span><span>Rs.{total}</span></div>
                 </div>
               </div>
             </aside>
